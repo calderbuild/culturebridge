@@ -160,9 +160,33 @@ def _generate_decision_report(context: dict, match_result: dict) -> dict:
     ]
 
     response = call_claude(
-        messages, system=DECISION_REPORT_SYSTEM, max_tokens=4000, temperature=0.3
+        messages, system=DECISION_REPORT_SYSTEM, max_tokens=8000, temperature=0.3
     )
-    return parse_json_response(response)
+    result = parse_json_response(response)
+    if isinstance(result, dict) and result.get("_parse_failed"):
+        logger.warning(
+            "Decision report JSON parse failed, building from enriched elements"
+        )
+        return {
+            "report_title": "Translation Decision Report",
+            "target_market": context["target_market"],
+            "decisions": [
+                {
+                    "concept": e["concept"],
+                    "significance": e.get("mapping", {}).get("cultural_note", ""),
+                    "chosen_translation": ", ".join(
+                        e.get("mapping", {}).get("good", [])
+                    ),
+                    "alternatives_rejected": e.get("mapping", {}).get("bad", []),
+                    "rationale": e.get("mapping", {}).get("principle", ""),
+                    "kb_source": e["source"],
+                }
+                for e in enriched
+                if e.get("mapping")
+            ],
+            "summary": f"Cultural adaptation report for {context['target_market']} market",
+        }
+    return result
 
 
 def _generate_promo(context: dict, translation_result: dict) -> dict:
@@ -185,7 +209,15 @@ def _generate_promo(context: dict, translation_result: dict) -> dict:
 
     system = PROMO_SYSTEM.format(target_lang=target_lang)
     response = call_claude(messages, system=system, max_tokens=3000, temperature=0.5)
-    return parse_json_response(response)
+    result = parse_json_response(response)
+    if isinstance(result, dict) and result.get("_parse_failed"):
+        return {
+            "synopsis": "",
+            "social_posts": [],
+            "hashtag_suggestions": [],
+            "target_audience": "",
+        }
+    return result
 
 
 def _generate_adaptation_suggestions(context: dict, translation_result: dict) -> dict:
