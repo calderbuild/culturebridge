@@ -1,0 +1,239 @@
+[
+  {
+    "concept": "渡劫",
+    "context": "修仙体系中修炼者突破大境界时必须经历的天雷考验",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "Heavenly Tribulation",
+          "Tribulation Lightning",
+          "undergo tribulation"
+        ],
+        "bad": ["cross the robbery", "survive disaster", "pass the robbery"],
+        "principle": "保留修仙体系的庄严感和危险感，不要用日常用语替代",
+        "avoid": ["robbery", "disaster", "calamity"],
+        "cultural_note": "In Chinese cultivation novels, 'Tribulation' refers to divine lightning that tests a cultivator's worthiness to advance to a higher realm. It's a life-or-death trial sent by the heavens — not a natural disaster."
+      }
+    }
+  },
+  {
+    "concept": "金丹",
+    "context": "修仙体系中的核心境界，在丹田内凝聚灵气形成的金色丹药",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Golden Core", "Golden Dan"],
+        "bad": ["gold pill", "golden medicine", "gold tablet"],
+        "principle": "Golden Core 是修仙翻译社区公认译法。不要用 pill/medicine 等药物词汇",
+        "avoid": ["pill", "medicine", "tablet", "drug"],
+        "cultural_note": "The Golden Core is a crystallized sphere of spiritual energy formed within a cultivator's dantian (energy center). Forming it marks a pivotal breakthrough — equivalent to graduating from apprentice to master."
+      }
+    }
+  },
+  {
+    "concept": "元婴",
+    "context": "金丹之上的境界，在丹田内孕育出一个微型的自我分身",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Nascent Soul", "Yuanying"],
+        "bad": ["original baby", "first infant", "primary baby"],
+        "principle": "Nascent Soul 是修仙翻译社区标准译法，不要直译为 baby/infant",
+        "avoid": ["baby", "infant", "child"],
+        "cultural_note": "The Nascent Soul is a miniature spiritual avatar that forms within a cultivator's body after shattering the Golden Core. It represents a qualitative leap in power — the cultivator can now project consciousness and survive otherwise fatal wounds."
+      }
+    }
+  },
+  {
+    "concept": "灵根",
+    "context": "决定一个人是否能修仙的天生资质",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["spiritual root", "spirit root"],
+        "bad": ["magic root", "soul root", "spiritual gene"],
+        "principle": "spiritual root 是标准译法。灵根决定天赋，类似于西方奇幻中的 magical aptitude",
+        "avoid": ["gene", "DNA", "talent gene"],
+        "cultural_note": "Spiritual roots are innate — you're born with them or you're not. They determine which elements (fire, water, wood, metal, earth) a cultivator has affinity for, and directly affect cultivation speed and potential."
+      }
+    }
+  },
+  {
+    "concept": "丹田",
+    "context": "人体内储存灵气/真气的核心区域，位于小腹",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["dantian", "energy center"],
+        "bad": ["pill field", "elixir field", "cinnabar field"],
+        "principle": "dantian 已被英文读者广泛接受，保留拼音。首次出现时可加注释",
+        "avoid": ["pill field", "elixir field"],
+        "cultural_note": "The dantian is an energy reservoir located in the lower abdomen, central to Chinese martial arts and cultivation practice. Think of it as an internal battery that stores and circulates spiritual power."
+      }
+    }
+  },
+  {
+    "concept": "道心",
+    "context": "修炼者对道的信念和意志，动摇道心会导致修为倒退",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Dao Heart", "Heart of the Dao", "cultivation resolve"],
+        "bad": ["road heart", "way heart", "path heart"],
+        "principle": "Dao Heart 是精神层面的概念，翻译时体现意志和信念的含义。不要直译为 road/way",
+        "avoid": ["road", "way"],
+        "cultural_note": "A cultivator's Dao Heart represents their unwavering conviction and mental clarity. If it 'cracks' or 'shatters' due to emotional trauma or self-doubt, their cultivation can regress catastrophically."
+      }
+    }
+  },
+  {
+    "concept": "飞升",
+    "context": "修仙的最终目标——肉身成仙，升入仙界",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "ascension",
+          "ascend to immortality",
+          "transcend to the Immortal Realm"
+        ],
+        "bad": ["fly up", "flying rise", "fly ascend"],
+        "principle": "ascension 是标准译法。这是修仙终极目标，翻译要有史诗感",
+        "avoid": ["fly", "flying"],
+        "cultural_note": "Ascension is the ultimate goal of cultivation — transcending mortality to become a true Immortal in a higher plane of existence. It's the culmination of centuries or millennia of practice."
+      }
+    }
+  },
+  {
+    "concept": "心魔",
+    "context": "修炼者内心的执念和恐惧，化为阻碍修炼的魔障",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["inner demon", "heart demon", "mental devil"],
+        "bad": ["heart evil", "mind monster"],
+        "principle": "inner demon 最常用。心魔不是外在的恶魔，是内心的心理障碍",
+        "avoid": ["monster", "evil spirit"],
+        "cultural_note": "Inner demons are not external creatures but manifestations of a cultivator's fears, obsessions, and unresolved trauma. They typically appear during breakthrough attempts and must be conquered through willpower."
+      }
+    }
+  },
+  {
+    "concept": "仙人",
+    "context": "完成修仙、超脱凡世的存在",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Immortal", "celestial being"],
+        "bad": ["fairy", "wizard", "magician"],
+        "principle": "Immortal（大写）是标准译法。不要用 fairy（仙女/精灵含义不同）或 wizard（西方魔法体系）",
+        "avoid": ["fairy", "wizard", "magician", "sorcerer"],
+        "cultural_note": "Chinese Immortals are fundamentally different from Western fairies or wizards. They are beings who have transcended mortality through disciplined cultivation — closer to enlightened sages than magical creatures."
+      }
+    }
+  },
+  {
+    "concept": "筑基",
+    "context": "修仙初期的基础境界，相当于打地基",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Foundation Establishment", "Foundation Building"],
+        "bad": ["build base", "construct foundation"],
+        "principle": "Foundation Establishment 是社区标准译法，大写作为境界名",
+        "avoid": ["build base", "construct"],
+        "cultural_note": "Foundation Establishment is the first major milestone in cultivation — the cultivator solidifies their spiritual foundation, much like laying the groundwork for a skyscraper. A weak foundation limits all future progress."
+      }
+    }
+  },
+  {
+    "concept": "化神",
+    "context": "元婴之上的高级境界",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Spirit Severing", "Deity Transformation", "Soul Formation"],
+        "bad": ["become god", "change spirit", "transform god"],
+        "principle": "不同小说体系用不同译法，但都应大写作为专有名词。避免 become god 等直译",
+        "avoid": ["become god", "turn into god"],
+        "cultural_note": "A realm beyond Nascent Soul where the cultivator's spiritual power undergoes a fundamental transformation. The exact nature varies by story — some involve severing worldly attachments, others involve merging with cosmic forces."
+      }
+    }
+  },
+  {
+    "concept": "天道",
+    "context": "宇宙运行的最高法则，修仙者追寻或对抗的终极力量",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Heavenly Dao", "the Way of Heaven", "Heaven's Will"],
+        "bad": ["sky road", "heaven road", "celestial path"],
+        "principle": "天道是哲学概念，不是物理道路。Heavenly Dao 保留东方哲学感",
+        "avoid": ["road", "path", "street"],
+        "cultural_note": "The Heavenly Dao is the supreme natural law governing all existence — impersonal, impartial, and absolute. Cultivators either align with it to gain power or defy it at tremendous risk. It's closer to 'cosmic order' than any personal deity."
+      }
+    }
+  },
+  {
+    "concept": "灵石",
+    "context": "修仙世界的通用货币，含有灵气的石头",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["spirit stone", "spiritual stone"],
+        "bad": ["magic stone", "mana stone", "soul gem"],
+        "principle": "spirit stone 是标准译法。分下品/中品/上品（low-grade/mid-grade/high-grade）",
+        "avoid": ["magic", "mana", "gem"],
+        "cultural_note": "Spirit stones serve as both currency and cultivation fuel in xianxia worlds. They contain concentrated spiritual energy that cultivators can absorb. Think of them as rechargeable spiritual batteries that also function as money."
+      }
+    }
+  },
+  {
+    "concept": "御剑飞行",
+    "context": "修仙者踩着飞剑在空中飞行的经典场景",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "sword flight",
+          "flying on a sword",
+          "ride the sword through the sky"
+        ],
+        "bad": ["control sword fly", "drive sword aviation"],
+        "principle": "描述性翻译即可，重点传达视觉画面。不要机械直译每个字",
+        "avoid": ["control", "drive", "aviation"],
+        "cultural_note": "One of the most iconic images in Chinese fantasy — a cultivator standing atop a gleaming sword, soaring through clouds. It symbolizes freedom, mastery, and transcendence of earthly limitations."
+      }
+    }
+  },
+  {
+    "concept": "结丹",
+    "context": "从筑基期突破到金丹期的关键过程",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Core Formation", "forming the Golden Core"],
+        "bad": ["tie pill", "knot pill", "make medicine"],
+        "principle": "Core Formation 是标准译法。这是修仙生涯的关键转折点",
+        "avoid": ["pill", "knot", "tie"],
+        "cultural_note": "Core Formation is a pivotal breakthrough where scattered spiritual energy condenses into a solid Golden Core. Many cultivators spend decades attempting it — failure can mean permanent stagnation or death."
+      }
+    }
+  }
+]

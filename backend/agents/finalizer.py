@@ -1,0 +1,218 @@
+"""Agent 5: Finalizer — apply review fixes, generate decision report + promo materials."""
+
+import json
+import logging
+
+from backend.llm import call_claude, parse_json_response
+
+logger = logging.getLogger("culturebridge.finalizer")
+
+FINALIZE_SYSTEM = """You are finalizing a cultural adaptation translation. You have:
+1. The original translations
+2. Review feedback with issues to fix
+
+Apply ONLY the reviewer's suggested fixes. Do not change lines that have no issues.
+
+Output JSON:
+{{
+  "final_translation": [
+    {{
+      "line_number": 1,
+      "original": "原文",
+      "translation": "final version",
+      "was_revised": true/false,
+      "revision_note": "what was changed and why (or null if unchanged)"
+    }}
+  ]
+}}"""
+
+DECISION_REPORT_SYSTEM = """Generate a Translation Decision Report for this cultural adaptation project.
+
+For each cultural concept encountered, explain:
+- The concept and its cultural significance
+- Why the chosen translation was selected
+- What alternatives were considered and rejected
+- The knowledge base entry that informed the decision (if any)
+
+This report lets the client audit WHY each cultural decision was made.
+Write in English. Be specific and cite the knowledge base entries provided.
+
+Output JSON:
+{{
+  "report_title": "Translation Decision Report",
+  "target_market": "...",
+  "decisions": [
+    {{
+      "concept": "臣妾",
+      "significance": "what this means culturally",
+      "chosen_translation": "the translation used",
+      "alternatives_rejected": ["rejected option 1", "rejected option 2"],
+      "rationale": "why this choice",
+      "kb_source": "knowledge_base or llm_inference"
+    }}
+  ],
+  "summary": "overall approach summary"
+}}"""
+
+PROMO_SYSTEM = """Based on the content analysis and translation, generate overseas promotion materials.
+
+Output JSON:
+{{
+  "synopsis": "100-200 word synopsis in {target_lang} for overseas audiences",
+  "social_posts": [
+    {{"platform": "TikTok", "text": "post text with hashtags"}},
+    {{"platform": "Instagram", "text": "post text with hashtags"}},
+    {{"platform": "X", "text": "post text with hashtags"}}
+  ],
+  "hashtag_suggestions": ["#tag1", "#tag2"],
+  "target_audience": "description of ideal overseas audience"
+}}"""
+
+
+def run(
+    context: dict, translation_result: dict, review_result: dict, match_result: dict
+) -> dict:
+    """Finalize translation + generate decision report and promo materials."""
+    translations = translation_result.get("translations", [])
+    issues = review_result.get("issues", [])
+    target_lang = context["target_lang"]
+
+    # Step 5a: Apply review fixes
+    final_translation = _apply_fixes(translations, issues)
+
+    # Step 5b: Generate decision report
+    decision_report = _generate_decision_report(context, match_result)
+
+    # Step 5c: Generate promo materials
+    promo = _generate_promo(context, translation_result)
+
+    # Step 5d: Adaptation suggestions
+    adaptation = _generate_adaptation_suggestions(context, translation_result)
+
+    logger.info(
+        "Finalized: %d lines, %d decisions, %d promo items",
+        len(final_translation),
+        len(decision_report.get("decisions", [])),
+        len(promo.get("social_posts", [])),
+    )
+
+    return {
+        "final_translation": final_translation,
+        "decision_report": decision_report,
+        "promo_materials": promo,
+        "adaptation_suggestions": adaptation,
+    }
+
+
+def _apply_fixes(translations: list, issues: list) -> list:
+    """Apply reviewer fixes to translations."""
+    if not issues:
+        return [
+            {**t, "was_revised": False, "revision_note": None} for t in translations
+        ]
+
+    # Build fix context
+    trans_text = json.dumps(translations, ensure_ascii=False, indent=2)
+    issues_text = json.dumps(issues, ensure_ascii=False, indent=2)
+
+    messages = [
+        {
+            "role": "user",
+            "content": f"Original translations:\n{trans_text}\n\nReview issues to fix:\n{issues_text}",
+        }
+    ]
+
+    response = call_claude(
+        messages, system=FINALIZE_SYSTEM, max_tokens=6000, temperature=0.2
+    )
+    result = parse_json_response(response)
+    return result.get("final_translation", translations)
+
+
+def _generate_decision_report(context: dict, match_result: dict) -> dict:
+    """Generate the translation decision audit report."""
+    enriched = match_result.get("enriched_elements", [])
+    if not enriched:
+        return {
+            "report_title": "Translation Decision Report",
+            "decisions": [],
+            "summary": "No cultural elements found.",
+        }
+
+    elements_desc = json.dumps(
+        [
+            {
+                "concept": e["concept"],
+                "source": e["source"],
+                "mapping": e.get("mapping"),
+            }
+            for e in enriched
+        ],
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    messages = [
+        {
+            "role": "user",
+            "content": f"Target market: {context['target_market']}\nContent type: {context['content_type']}\n\nCultural elements and their KB mappings:\n{elements_desc}",
+        }
+    ]
+
+    response = call_claude(
+        messages, system=DECISION_REPORT_SYSTEM, max_tokens=4000, temperature=0.3
+    )
+    return parse_json_response(response)
+
+
+def _generate_promo(context: dict, translation_result: dict) -> dict:
+    """Generate overseas promotion materials."""
+    lang_names = {"en": "English", "ja": "Japanese", "ko": "Korean"}
+    target_lang = lang_names.get(context["target_lang"], context["target_lang"])
+
+    # Use first few translated lines as context
+    sample = translation_result.get("translations", [])[:10]
+    sample_text = "\n".join(
+        f"{t.get('original', '')} → {t.get('translation', '')}" for t in sample
+    )
+
+    messages = [
+        {
+            "role": "user",
+            "content": f"Content type: {context['content_type']}\nTarget market: {context['target_market']}\n\nSample content:\n{sample_text}",
+        }
+    ]
+
+    system = PROMO_SYSTEM.format(target_lang=target_lang)
+    response = call_claude(messages, system=system, max_tokens=3000, temperature=0.5)
+    return parse_json_response(response)
+
+
+def _generate_adaptation_suggestions(context: dict, translation_result: dict) -> dict:
+    """Generate adaptation suggestions (character names, plot adjustments)."""
+    notes = translation_result.get("cultural_notes", [])
+    if not notes:
+        return {"suggestions": [], "summary": "No specific adaptation needed."}
+
+    notes_text = json.dumps(notes, ensure_ascii=False, indent=2)
+
+    messages = [
+        {
+            "role": "user",
+            "content": (
+                f"Content type: {context['content_type']}, target market: {context['target_market']}\n\n"
+                f"Cultural notes from translation:\n{notes_text}\n\n"
+                "Based on these cultural elements, suggest adaptations for the target market: "
+                "character name localization, plot adjustments, visual changes. "
+                "Output JSON with 'suggestions' array and 'summary'."
+            ),
+        }
+    ]
+
+    response = call_claude(
+        messages,
+        system="You are a cultural adaptation consultant.",
+        max_tokens=2000,
+        temperature=0.4,
+    )
+    return parse_json_response(response)

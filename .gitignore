@@ -1,6 +1,10 @@
 .playwright-mcp/
 *.pdf
+*.png
+*.jpg
+*.jpeg
 __pycache__/
 .env
 .DS_Store
 node_modules/
+backend/output/

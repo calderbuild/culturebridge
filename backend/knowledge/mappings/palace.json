@@ -1,0 +1,370 @@
+[
+  {
+    "concept": "臣妾",
+    "context": "古装宫廷剧中妃嫔对皇帝的自称，表达顺从和谦卑",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": ["Your Majesty, I...", "This humble consort..."],
+        "bad": ["maid", "servant", "slave girl", "your servant"],
+        "principle": "保留妃嫔身份的尊贵感和对皇帝的顺从语气。用第一人称+敬语结构，不要用第三人称或仆人类词汇",
+        "avoid": ["maid", "servant", "slave", "handmaiden"],
+        "cultural_note": "In Chinese palace dramas, 'chen qie' is a humble self-reference used by imperial consorts when addressing the Emperor. It conveys deference and a complex mix of submission and dignity — never servitude."
+      }
+    }
+  },
+  {
+    "concept": "本宫",
+    "context": "皇后或高位妃嫔的自称，带有权威和身份感",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": ["I", "This Empress", "We (royal we)"],
+        "bad": ["this palace", "my palace", "the palace"],
+        "principle": "本宫是身份宣示，不是地点。翻译时体现说话者的权威感。普通对话用 I 即可，强调身份时用 This Empress/This Consort",
+        "avoid": ["palace", "this house"],
+        "cultural_note": "'Ben Gong' literally means 'this palace' but is used as a first-person pronoun by high-ranking consorts, asserting their status and authority within the imperial court."
+      }
+    }
+  },
+  {
+    "concept": "皇上",
+    "context": "对皇帝的尊称",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": ["Your Majesty", "the Emperor", "Sire"],
+        "bad": ["emperor above", "imperial up", "your highness"],
+        "principle": "直接用 Your Majesty。注意 Your Highness 是王子/公主用的，不是皇帝",
+        "avoid": ["your highness"],
+        "cultural_note": "The formal address for the Emperor in Chinese court. Equivalent to 'Your Majesty' in European royal courts."
+      }
+    }
+  },
+  {
+    "concept": "奴才",
+    "context": "太监或低等级宫人对皇帝/主子的自称，清朝特有",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "Your humble servant",
+          "This servant",
+          "I (with deferential tone)"
+        ],
+        "bad": ["slave", "your slave", "nucai"],
+        "principle": "奴才在清宫剧中是固定自称，不带现代'奴隶'的负面含义。翻译时保留谦卑但避免 slave 一词的种族敏感性",
+        "avoid": ["slave", "bondsman"],
+        "cultural_note": "'Nu cai' was a self-deprecating term used by eunuchs and servants in the Qing Dynasty court. Despite literally meaning 'slave', it was a standard form of address showing loyalty, not actual enslavement."
+      }
+    }
+  },
+  {
+    "concept": "微臣",
+    "context": "大臣对皇帝的自称，谦虚但有一定地位",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": ["Your humble minister", "This minister", "I, your servant"],
+        "bad": ["small minister", "tiny official", "micro-minister"],
+        "principle": "微臣是谦称但说话者是有实权的官员。翻译要体现谦虚但不卑微",
+        "avoid": ["small", "tiny", "minor"],
+        "cultural_note": "A humble self-reference used by court officials when addressing the Emperor. The speaker typically holds significant power despite the self-deprecating language."
+      }
+    }
+  },
+  {
+    "concept": "哀家",
+    "context": "太后的自称，带有丧夫的悲凉和至高权威",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": ["I (as Dowager)", "This Dowager Empress"],
+        "bad": ["sad family", "mourning house", "grief home"],
+        "principle": "哀家字面是'悲哀之家'，但在剧中是太后的权威自称。翻译时体现权威而非悲伤，除非剧情需要",
+        "avoid": ["sad", "mourning", "grief"],
+        "cultural_note": "'Ai jia' literally means 'this grieving one' — a self-reference by the Empress Dowager acknowledging her widowhood. In practice, it signals supreme authority in the inner court."
+      }
+    }
+  },
+  {
+    "concept": "冤家",
+    "context": "又爱又恨的人，宫斗剧中常用于情敌或命中注定的对手",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "my bitter rival",
+          "my fated nemesis",
+          "you wretch (affectionate-hostile)"
+        ],
+        "bad": ["injustice family", "wrong house", "unjust person"],
+        "principle": "冤家在中文里带有宿命感和爱恨交织的复杂情感。根据语境选择偏爱还是偏恨的翻译",
+        "avoid": ["injustice", "wrong", "unjust"],
+        "cultural_note": "'Yuan jia' describes someone with whom you share a complicated, fateful bond — part rival, part kindred spirit. It implies destiny brought you together, whether you like it or not."
+      }
+    }
+  },
+  {
+    "concept": "翻牌子",
+    "context": "皇帝选择当晚侍寝妃嫔的宫廷仪式",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "choose a consort for the night",
+          "select the evening's companion",
+          "flip the name tablet"
+        ],
+        "bad": ["turn over the card", "flip the brand", "play cards"],
+        "principle": "这是古代宫廷特有的制度，需要解释性翻译。直译'翻牌子'毫无意义",
+        "avoid": ["card", "brand", "plate"],
+        "cultural_note": "A Qing Dynasty palace ritual where the Emperor would flip over a jade tablet bearing a consort's name to summon her for the night. It was a highly formalized and politically significant act."
+      }
+    }
+  },
+  {
+    "concept": "打入冷宫",
+    "context": "皇帝将失宠妃嫔囚禁在冷僻宫殿，是严厉惩罚",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "banished to the Cold Palace",
+          "confined to the forgotten quarters",
+          "cast into exile within the palace walls"
+        ],
+        "bad": [
+          "put into cold palace",
+          "sent to cold room",
+          "go to cold house"
+        ],
+        "principle": "冷宫是专有名词概念，保留 Cold Palace 大写。强调这是终身幽禁式的惩罚",
+        "avoid": ["cold room", "cold house"],
+        "cultural_note": "The 'Cold Palace' was a remote, neglected section of the Forbidden City where disgraced consorts were effectively imprisoned for life — stripped of rank, visitors, and hope of restoration."
+      }
+    }
+  },
+  {
+    "concept": "赐死",
+    "context": "皇帝下令某人自尽，被视为一种'恩赐'",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "granted death",
+          "bestowed the mercy of death",
+          "ordered to take their own life"
+        ],
+        "bad": ["gift death", "give death", "present death"],
+        "principle": "赐死在古代是'恩赐'——让罪人体面地死去而非公开处刑。翻译时保留这层讽刺感",
+        "avoid": ["gift", "present", "give"],
+        "cultural_note": "'Ci si' — the Emperor 'granting' death — was considered a form of mercy in imperial China, allowing the condemned to die privately rather than face public execution. The cruel irony is intentional."
+      }
+    }
+  },
+  {
+    "concept": "选秀",
+    "context": "皇帝选妃的宫廷选拔仪式，非现代选秀节目",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "the Imperial Selection",
+          "the consort selection ceremony",
+          "the palace draft"
+        ],
+        "bad": ["talent show", "audition", "beauty pageant"],
+        "principle": "古代选秀是政治婚姻制度，不是娱乐节目。避免任何现代选秀节目的联想",
+        "avoid": ["talent show", "audition", "contest", "pageant"],
+        "cultural_note": "The Imperial Selection was a formal process where eligible young women from noble families were brought to the palace for the Emperor to choose consorts — a political arrangement, not a beauty contest."
+      }
+    }
+  },
+  {
+    "concept": "册封",
+    "context": "正式授予妃嫔封号和位分",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "bestow the title of...",
+          "formally elevate to the rank of...",
+          "confer the title"
+        ],
+        "bad": ["book seal", "register and seal"],
+        "principle": "册封是重大宫廷仪式，翻译要体现庄严和正式感",
+        "avoid": ["register", "book", "stamp"],
+        "cultural_note": "An elaborate court ceremony conferring official rank and title upon a consort, complete with edicts, ceremonial robes, and formal proclamation — a pivotal moment in palace politics."
+      }
+    }
+  },
+  {
+    "concept": "太岁头上动土",
+    "context": "比喻在强者面前冒犯，自不量力",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "dare to cross me?",
+          "you dare provoke someone far above your station?",
+          "how bold of you to challenge your betters"
+        ],
+        "bad": ["dig earth on Jupiter's head", "move soil on Tai Sui"],
+        "principle": "意译为主，传达'在强者面前挑衅'的含义。不要翻译太岁的字面意思",
+        "avoid": ["Jupiter", "Tai Sui", "earth god"],
+        "cultural_note": "Tai Sui is a deity in Chinese folk religion associated with the planet Jupiter. 'Disturbing the earth above Tai Sui' means provoking someone far more powerful than yourself — a very dangerous act."
+      }
+    }
+  },
+  {
+    "concept": "三十年河东三十年河西",
+    "context": "风水轮流转，今日得意者明日可能落魄",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "fortune is a wheel that never stops turning",
+          "today's victor may be tomorrow's fallen",
+          "the tides of fate spare no one"
+        ],
+        "bad": [
+          "thirty years east river thirty years west river",
+          "30 years east 30 years west"
+        ],
+        "principle": "这是经典哲理台词，翻译要有格言感和节奏感。完全意译",
+        "avoid": ["river", "east", "west", "thirty years"],
+        "cultural_note": "A proverb about the impermanence of fortune, derived from the Yellow River's habit of changing course over decades. It warns the powerful not to be complacent."
+      }
+    }
+  },
+  {
+    "concept": "知人知面不知心",
+    "context": "你可以看到一个人的外表但无法看透内心",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "you can know someone's face but never their heart",
+          "appearances deceive",
+          "trust no one at face value"
+        ],
+        "bad": ["know person know face not know heart"],
+        "principle": "宫斗剧经典台词，翻译要有阴谋感和警告语气",
+        "avoid": [],
+        "cultural_note": "A common saying in palace intrigue dramas, warning that allies and enemies may be indistinguishable behind their courtly masks."
+      }
+    }
+  },
+  {
+    "concept": "娘娘",
+    "context": "对皇后或高位妃嫔的尊称",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "Your Grace",
+          "my Lady",
+          "Your Ladyship",
+          "Empress (if referring to 皇后)"
+        ],
+        "bad": ["mother", "mommy", "niang niang"],
+        "principle": "娘娘是宫廷敬称，不是'妈妈'。根据被称呼者的位分选择 Your Grace 或 Empress",
+        "avoid": ["mother", "mom", "mama"],
+        "cultural_note": "'Niang niang' is a respectful form of address for high-ranking women in the imperial palace — similar to 'Your Grace' or 'my Lady' in European court protocol."
+      }
+    }
+  },
+  {
+    "concept": "请安",
+    "context": "宫廷中向上位者行礼问好的仪式",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "pay respects to",
+          "greet (with a formal bow)",
+          "present morning salutations"
+        ],
+        "bad": ["ask for peace", "request safety"],
+        "principle": "请安是宫廷日常礼仪，翻译时体现仪式感。不同场合的请安有不同正式程度",
+        "avoid": ["ask peace", "request peace"],
+        "cultural_note": "A daily court ritual where lower-ranking members formally greet their superiors, typically with specific postures — kneeling for the Emperor, curtseying for consorts."
+      }
+    }
+  },
+  {
+    "concept": "侍寝",
+    "context": "妃嫔被选中陪伴皇帝过夜",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "attend the Emperor's chambers",
+          "summoned to the Imperial bedchamber",
+          "spend the night with His Majesty"
+        ],
+        "bad": ["serve sleep", "sleep serve", "serve the bed"],
+        "principle": "含蓄处理，保留宫廷语境的委婉和正式感。不需要露骨表达",
+        "avoid": ["sex", "sleep with", "bed service"],
+        "cultural_note": "A formal euphemism for a consort being chosen to spend the night with the Emperor — an event of enormous political significance in palace dynamics."
+      }
+    }
+  },
+  {
+    "concept": "凤冠霞帔",
+    "context": "皇后或高位妃嫔的正式礼服，象征至高地位",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "the phoenix crown and ceremonial robes",
+          "full imperial regalia",
+          "the Empress's ceremonial attire"
+        ],
+        "bad": ["phoenix hat and colorful cape", "bird crown rainbow dress"],
+        "principle": "凤冠霞帔是中国最高等级的女性礼服，翻译要体现庄严和奢华",
+        "avoid": ["hat", "cape", "dress"],
+        "cultural_note": "The phoenix crown (feng guan) and cloud-patterned ceremonial cape (xia pei) represent the highest honor for women in imperial China — worn only at coronations, weddings, and the most important state ceremonies."
+      }
+    }
+  },
+  {
+    "concept": "莫欺少年穷",
+    "context": "不要看不起年轻人现在的贫穷，未来不可限量",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "never underestimate a young man with nothing to lose",
+          "mock me now — I will have the last laugh",
+          "today's nobody is tomorrow's somebody"
+        ],
+        "bad": ["don't bully young poor", "don't deceive young poverty"],
+        "principle": "这是热血逆袭名言，翻译要有气势和戏剧张力。常出现在角色受辱后的独白",
+        "avoid": ["bully", "deceive", "poor young"],
+        "cultural_note": "A beloved underdog declaration in Chinese storytelling — the hero vows that those who look down on them now will regret it when they rise to power."
+      }
+    }
+  }
+]
