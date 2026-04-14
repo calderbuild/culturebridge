@@ -1,0 +1,386 @@
+[
+  {
+    "concept": "相亲",
+    "context": "由父母或媒人安排的相亲约会，中国都市剧中极为常见的情节",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "go on a blind date",
+          "an arranged meeting",
+          "a matchmaking date"
+        ],
+        "bad": ["meet each other", "see each other", "blind appointment"],
+        "principle": "相亲不是普通约会，是带有家庭压力和婚姻目的的正式安排。翻译要体现这层社会压力",
+        "avoid": ["appointment", "interview", "meeting"],
+        "cultural_note": "Xiangqin is a structured blind date arranged by parents, relatives, or professional matchmakers, with marriage as the explicit goal. Unlike Western casual dating, both families typically exchange detailed information (job, income, property, household registration) before the meeting. Refusing to attend is seen as defying parental authority."
+      }
+    }
+  },
+  {
+    "concept": "彩礼",
+    "context": "男方家庭在婚前支付给女方家庭的聘金，金额常引发家庭冲突",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "bride price",
+          "betrothal gift",
+          "wedding endowment from the groom's family"
+        ],
+        "bad": ["dowry", "gift money", "marriage payment"],
+        "principle": "彩礼是男方给女方家的钱，与 dowry（嫁妆，女方带到男方家的财产）方向相反。绝不能混淆",
+        "avoid": ["dowry", "ransom", "purchase price"],
+        "cultural_note": "Caili is money or gifts the groom's family pays to the bride's family before the wedding. Amounts vary wildly by region — from symbolic gestures to sums exceeding a year's salary. It is a major source of conflict in modern Chinese dramas, often pitting young couples against parents with sky-high demands. Unlike dowry (which flows from bride's family to groom's), caili flows the opposite direction."
+      }
+    }
+  },
+  {
+    "concept": "丈母娘",
+    "context": "妻子的母亲，在都市剧中常以挑剔、强势的形象出现",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": ["mother-in-law", "my wife's mother", "her mother"],
+        "bad": ["old mother-in-law", "wife's mom", "mama-in-law"],
+        "principle": "丈母娘特指妻子的母亲（区别于婆婆——丈夫的母亲）。翻译时如需区分，可加 from wife's side",
+        "avoid": ["old lady", "the missus's mom"],
+        "cultural_note": "The zhangmuniang (wife's mother) is a stock character in Chinese urban dramas — often portrayed as the gatekeeper of marriage who evaluates the son-in-law's financial worthiness. The stereotype 'no house no car no marriage' (没房没车不嫁) is frequently attributed to her. She embodies the materialistic pressures of modern Chinese marriage negotiations."
+      }
+    }
+  },
+  {
+    "concept": "面子",
+    "context": "社会声誉和他人对自己的看法，驱动中国人许多社交行为的核心概念",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": ["face", "reputation", "social standing"],
+        "bad": ["surface", "outside appearance", "skin"],
+        "principle": "面子是中国社会的核心概念，英文 face 在此语境下已被广泛接受（lose face, save face, give face）。保留 face 的用法即可",
+        "avoid": ["surface", "mask", "facade"],
+        "cultural_note": "Mianzi goes far beyond 'reputation' — it is a social currency that governs nearly every interaction in Chinese life. Giving someone face (给面子) means showing them public respect; causing someone to lose face (丢面子) is a serious social offense that can end relationships and careers. In dramas, characters often make irrational financial or personal decisions purely to maintain face."
+      }
+    }
+  },
+  {
+    "concept": "关系",
+    "context": "人际关系网络和社会资本，办事靠关系是中国社会的潜规则",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": ["connections", "guanxi", "social network"],
+        "bad": ["relationship", "relation", "connection"],
+        "principle": "关系在社交语境下不是普通的'关系'，而是互惠互利的人脉网络。可保留拼音 guanxi 作为文化术语，或用 connections 加上下文说明",
+        "avoid": ["relationship (romantic sense)", "kinship"],
+        "cultural_note": "Guanxi is a system of reciprocal social obligations that functions as an informal power structure in Chinese society. Having guanxi means you can call in favors — getting your child into a good school, securing a hospital bed, winning a contract. It is built through gift-giving, banquets, and mutual favors over years. In urban dramas, guanxi often determines who succeeds and who fails, regardless of merit."
+      }
+    }
+  },
+  {
+    "concept": "铁饭碗",
+    "context": "稳定的政府或国企工作，不会被裁员，是老一辈眼中的理想职业",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "an iron rice bowl",
+          "a guaranteed government job",
+          "a job for life"
+        ],
+        "bad": ["iron bowl", "steel rice container", "metal food bowl"],
+        "principle": "iron rice bowl 是已被英文接受的中国文化术语，可直接使用。也可意译为 a job for life 或 a secure government position",
+        "avoid": ["steel bowl", "metal bowl", "permanent bowl"],
+        "cultural_note": "The 'iron rice bowl' refers to stable, state-guaranteed employment — typically civil service or state-owned enterprise jobs that come with housing, healthcare, pensions, and near-zero risk of layoff. Older generations consider it the ideal career path. In modern dramas, generational conflict often erupts when young people reject an iron rice bowl to pursue startups, art, or other 'unstable' careers."
+      }
+    }
+  },
+  {
+    "concept": "望子成龙",
+    "context": "父母对子女出人头地的强烈期望，常表现为极端的教育投入",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "hoping their child will become a dragon",
+          "desperate for their child to succeed",
+          "living vicariously through their children's achievements"
+        ],
+        "bad": [
+          "wish son become dragon",
+          "want child to be dragon",
+          "dragon son wish"
+        ],
+        "principle": "龙在中文里象征成功和尊贵，不是西方的恶龙。首次出现可解释性翻译，后续用意译",
+        "avoid": ["dragon child", "dragon son"],
+        "cultural_note": "This idiom captures the intense parental investment in children's success that defines modern Chinese family dynamics. Parents sacrifice savings, retirement, and personal happiness to fund tutoring, exam prep, and overseas education. The 'dragon' symbolizes extraordinary achievement — not the fearsome Western dragon, but the Chinese dragon representing power, honor, and ascendancy."
+      }
+    }
+  },
+  {
+    "concept": "月老",
+    "context": "中国神话中掌管姻缘的神仙，用红线牵连命中注定的情侣",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "the Old Man Under the Moon",
+          "the God of Marriage",
+          "the divine matchmaker"
+        ],
+        "bad": ["moon old man", "moon elder", "old moon"],
+        "principle": "月老是专有文化形象，不能拆字直译。翻译时保留其神话身份和月下红线的浪漫意象",
+        "avoid": ["moon old", "moon elder", "lunar elder"],
+        "cultural_note": "Yue Lao is a deity in Chinese mythology who ties an invisible red thread between destined lovers. When characters in modern dramas say 'Yue Lao must have tied our red thread,' they mean their love is fated. The concept is often invoked humorously when meddling relatives play matchmaker — 'playing Yue Lao' means trying to set people up."
+      }
+    }
+  },
+  {
+    "concept": "红包",
+    "context": "装有现金的红色信封，用于节日、婚礼、人情往来等场合",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "a red envelope",
+          "gift money in a red envelope",
+          "a cash gift"
+        ],
+        "bad": ["red bag", "red packet money", "red paper"],
+        "principle": "red envelope 已是英文中广泛接受的说法。注意红包不只是春节，婚礼、探病、拜访长辈等场合都要给",
+        "avoid": ["red bag", "red packet", "lucky money bag"],
+        "cultural_note": "Hongbao is far more than a holiday tradition — it is the primary vehicle for social currency in Chinese life. Red envelopes are given at weddings (份子钱), Lunar New Year, birthdays, hospital visits, and even as informal bribes. The amount is highly codified: even numbers only (never 4), and the sum must match your relationship closeness and social status. Giving too little is an insult; giving too much creates an uncomfortable debt."
+      }
+    }
+  },
+  {
+    "concept": "丢人",
+    "context": "让自己或家庭在公众面前丢脸，是严重的社交惩罚",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": ["humiliating", "a disgrace", "losing face"],
+        "bad": ["lose person", "throw person", "drop people"],
+        "principle": "丢人的严重程度比英文 embarrassing 重得多，接近 disgrace。在中国语境下丢人可以影响整个家族的社会地位",
+        "avoid": ["lose person", "throw face"],
+        "cultural_note": "Diuren is much stronger than 'embarrassing' — it implies bringing shame upon yourself and your entire family. In Chinese culture, individual behavior reflects on the collective family honor. A child's divorce, job loss, or public scandal is 'diuren' not just for them but for their parents and extended family. This fear of diuren drives many characters in urban dramas to maintain unhappy marriages, stay in miserable jobs, or hide personal failures."
+      }
+    }
+  },
+  {
+    "concept": "拍马屁",
+    "context": "奉承讨好上级或有权势的人，职场剧中的常见行为",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": ["brown-nosing", "sucking up", "flattering the boss"],
+        "bad": ["pat horse butt", "slap horse's behind", "touch horse's rear"],
+        "principle": "拍马屁的字面意思（拍马的屁股）完全不可直译。用英文对应的俚语即可",
+        "avoid": ["horse", "pat", "slap"],
+        "cultural_note": "The idiom originates from Mongolian culture — herders would pat a horse's hindquarters to praise its quality. In modern Chinese, it means shamelessly flattering someone in power. Workplace dramas frequently contrast the 'paima pi' sycophant (who gets promoted) against the honest worker (who gets sidelined), reflecting widespread cynicism about Chinese corporate culture."
+      }
+    }
+  },
+  {
+    "concept": "吃醋",
+    "context": "因恋爱关系中的第三方而产生嫉妒心理",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": ["jealous", "green with envy", "eaten up with jealousy"],
+        "bad": ["eat vinegar", "drink vinegar", "sour"],
+        "principle": "吃醋专指爱情中的嫉妒，不能直译为'吃醋/喝醋'。用 jealous 即可，语气可根据情境调整轻重",
+        "avoid": ["vinegar", "sour", "acidic"],
+        "cultural_note": "Chicu literally means 'eating vinegar' and refers specifically to romantic jealousy. Legend has it that a Tang Dynasty minister's wife threatened to drink poison rather than accept her husband's concubine — the Emperor replaced the poison with vinegar, and the term stuck. In modern dramas, chicu scenes are a staple of romantic comedy, often played for laughs when a character denies being jealous while clearly seething."
+      }
+    }
+  },
+  {
+    "concept": "老实人",
+    "context": "老实、不善社交、容易被利用的人，常带有贬义或同情色彩",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "a pushover",
+          "a nice guy who finishes last",
+          "too honest for his own good"
+        ],
+        "bad": ["honest person", "truthful man", "old honest man"],
+        "principle": "老实人在现代中文语境中往往带有负面含义——不是褒奖诚实，而是暗示此人好欺负、不懂变通。翻译时要传达这层苦涩",
+        "avoid": ["honest man", "good person", "truthful person"],
+        "cultural_note": "Laoshiren superficially means 'honest person,' but in modern Chinese usage it carries a bitter edge — someone who is naive, easily exploited, and always taken advantage of. The internet slang '老实人接盘' (the honest guy picks up the tab) describes a man who marries a woman others rejected. In dramas, the laoshiren arc typically involves the character learning to stand up for themselves or being punished for their naivete."
+      }
+    }
+  },
+  {
+    "concept": "败家子",
+    "context": "挥霍家产、不务正业的子女，令家族蒙羞",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "a prodigal son",
+          "a spendthrift heir",
+          "a wastrel who will ruin this family"
+        ],
+        "bad": ["defeat family child", "losing-home kid", "family destroyer"],
+        "principle": "败家子有强烈的道德审判——不只是花钱多，而是辜负家族期望。prodigal son 是最佳对应",
+        "avoid": ["bad child", "naughty kid", "failure child"],
+        "cultural_note": "Baijiazi literally means 'one who ruins the family fortune.' In Chinese culture, where wealth is accumulated across generations and children are expected to multiply the family's assets, a baijiazi represents the ultimate betrayal of filial duty. The term is not just about spending money — it encompasses gambling, failed businesses, and any behavior that squanders what ancestors worked to build."
+      }
+    }
+  },
+  {
+    "concept": "门当户对",
+    "context": "婚姻中男女双方家庭社会地位和经济条件应当匹配",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "a good match in family status",
+          "well-matched families",
+          "marrying within your class"
+        ],
+        "bad": [
+          "door matches door",
+          "gate equals gate",
+          "matching doors and households"
+        ],
+        "principle": "门当户对是中国传统婚姻观的核心理念。不能拆字直译（门=门，户=户），要传达'社会阶层匹配'的含义",
+        "avoid": ["door", "gate", "household match"],
+        "cultural_note": "Mendang hudui originally referred to the decorative stonework flanking a family's gate — matching styles indicated equal social rank. Today it means families should be of similar wealth, education, and social standing for a marriage to work. This belief drives countless conflicts in urban dramas: wealthy parents rejecting a poor suitor, or a self-made entrepreneur being looked down upon by old-money families. It remains one of the strongest forces shaping Chinese marriage."
+      }
+    }
+  },
+  {
+    "concept": "出人头地",
+    "context": "超越同辈、获得社会地位和成功，是许多角色的核心驱动力",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "make something of yourself",
+          "rise above the rest",
+          "climb to the top"
+        ],
+        "bad": [
+          "exit person head ground",
+          "come out of people's heads",
+          "head above land"
+        ],
+        "principle": "出人头地是中国式成功叙事的核心表达。翻译要有向上的力量感和抱负感",
+        "avoid": ["head above ground", "come out on top of people"],
+        "cultural_note": "Churentoudi — literally 'to have your head rise above the crowd' — captures the Chinese aspiration to transcend one's origins through hard work, education, or business success. It is often the stated goal of parents who sacrifice everything for their children, and of rural migrants who come to cities with nothing. In dramas, the churentoudi arc is the engine of the plot: the hero's relentless climb against systemic barriers."
+      }
+    }
+  },
+  {
+    "concept": "人情世故",
+    "context": "为人处世的潜规则和社交智慧，不写在任何规则里但人人必须遵守",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "the unwritten rules of social life",
+          "worldly wisdom",
+          "social savvy"
+        ],
+        "bad": [
+          "human feeling world reason",
+          "people emotion things old",
+          "human customs"
+        ],
+        "principle": "人情世故是无法一词翻译的文化概念，包含送礼、回礼、察言观色、给面子等一整套社交规则。根据语境选择最合适的意译",
+        "avoid": ["human feelings", "world customs", "social customs"],
+        "cultural_note": "Renqing shigu is the invisible operating system of Chinese social life — an elaborate set of unwritten rules governing gift-giving, favor-trading, face-saving, and interpersonal hierarchy. A person who 'doesn't understand renqing shigu' is considered socially dangerous, no matter how talented they are. In dramas, mastering renqing shigu is often what separates those who succeed from those who fail, even when the 'naive' character is technically more capable."
+      }
+    }
+  },
+  {
+    "concept": "不孝有三无后为大",
+    "context": "孝道中最大的不孝是没有后代延续香火，是催婚催生的终极武器",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "the greatest filial sin is to leave no heir",
+          "of all unfilial acts, failing to produce an heir is the worst",
+          "you owe your ancestors a grandchild"
+        ],
+        "bad": [
+          "not filial has three, no after is big",
+          "three unfilialities, no descendant biggest",
+          "unfilial piety three no heir great"
+        ],
+        "principle": "这是儒家经典（孟子）中的名句，翻译要有格言的庄重感。都市剧中常被长辈用来催婚催生，带有压迫感",
+        "avoid": ["three unfilial", "no after big"],
+        "cultural_note": "This Mencius quote is weaponized by Chinese parents to pressure adult children into marriage and reproduction. It equates childlessness with the ultimate moral failure — betraying not just living parents but the entire ancestral line. In modern dramas, this phrase typically appears in heated family arguments when parents confront children who are single, child-free by choice, or in same-sex relationships. It represents the collision between traditional Confucian values and modern individualism."
+      }
+    }
+  },
+  {
+    "concept": "鸡毛蒜皮",
+    "context": "微不足道的家庭琐事，但在中国家庭剧中往往是引爆矛盾的导火索",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "petty domestic squabbles",
+          "trivial household matters",
+          "the small stuff that tears families apart"
+        ],
+        "bad": [
+          "chicken feather garlic skin",
+          "chicken hair garlic peel",
+          "feathers and peels"
+        ],
+        "principle": "鸡毛蒜皮字面意思是鸡的毛和蒜的皮——最不值钱的东西。但在家庭剧语境中，这些琐事往往反映深层矛盾",
+        "avoid": ["chicken", "feather", "garlic", "skin"],
+        "cultural_note": "Jimao suanpi — literally 'chicken feathers and garlic skin' — refers to the endless trivial conflicts of domestic life: who does the dishes, whose parents visit for the holiday, how to split utility bills with in-laws. In Chinese family dramas, these 'trivial' disputes are never truly trivial — they are proxy wars for deeper issues of power, respect, and generational control within multi-generation households."
+      }
+    }
+  },
+  {
+    "concept": "家和万事兴",
+    "context": "家庭和睦则一切顺利，中国家庭价值观的最高纲领",
+    "content_types": ["drama", "novel"],
+    "genre": "modern",
+    "mappings": {
+      "en": {
+        "good": [
+          "a harmonious family prospers in all things",
+          "when the family is at peace, all goes well",
+          "family harmony is the foundation of success"
+        ],
+        "bad": [
+          "home and ten thousand things prosper",
+          "family peace all things rise",
+          "harmonious home everything flourish"
+        ],
+        "principle": "这是中国人挂在客厅墙上的座右铭，翻译要有格言感。注意不要逐字翻译'万事'为 ten thousand things",
+        "avoid": ["ten thousand things", "all affairs", "myriad matters"],
+        "cultural_note": "This proverb — often displayed as calligraphy in Chinese living rooms — encapsulates the belief that family unity is the prerequisite for any individual success. It is both an aspiration and a tool of control: family members who rock the boat (seeking divorce, moving away, choosing an 'unsuitable' career) are told they are destroying the family's collective prosperity. In dramas, this phrase often appears as the final moral — a reminder that no career, wealth, or personal freedom is worth sacrificing family peace."
+      }
+    }
+  }
+]

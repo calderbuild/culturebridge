@@ -1,0 +1,422 @@
+[
+  {
+    "concept": "江湖",
+    "context": "武侠世界的总称，指由武者、帮派、门派构成的地下社会",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "the martial world",
+          "the world of rivers and lakes",
+          "the jianghu"
+        ],
+        "bad": ["rivers and lakes", "the lake", "river society"],
+        "principle": "江湖是武侠世界观的核心概念，指官府之外的武林社会。首次出现时可用 the martial world (jianghu) 标注，后续直接用 jianghu。不要直译为地理名词",
+        "avoid": ["rivers and lakes", "lake", "river"],
+        "cultural_note": "'Jianghu' literally means 'rivers and lakes' but refers to the entire shadow society of martial artists, outlaws, and wandering swordsmen operating outside the law. Think of it as the martial arts underworld — a parallel society with its own codes of honor, hierarchies, and justice systems, existing alongside but separate from the imperial government."
+      }
+    }
+  },
+  {
+    "concept": "武林盟主",
+    "context": "武林各门派公认的最高领袖，通常通过武功或声望选出",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "the Alliance Leader",
+          "Supreme Leader of the Martial World",
+          "the Wulin Chancellor"
+        ],
+        "bad": [
+          "martial forest alliance master",
+          "kung fu leader",
+          "fighting boss"
+        ],
+        "principle": "武林盟主是武侠世界的最高政治头衔，翻译要有权威感和庄严感。Alliance Leader 大写表示唯一性",
+        "avoid": ["martial forest", "kung fu", "boss"],
+        "cultural_note": "The Wulin Alliance Leader is the closest thing the martial world has to a president — elected or acclaimed by the major sects to unite them against a common threat. The position carries enormous prestige but limited real power, since each sect retains autonomy. Succession often involves a grand tournament or a crisis that demands unified action."
+      }
+    }
+  },
+  {
+    "concept": "内力",
+    "context": "通过修炼积累的体内能量，是一切高级武功的基础",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": ["internal energy", "inner power", "internal force"],
+        "bad": ["inside strength", "inner muscles", "internal physical force"],
+        "principle": "内力是气功修炼的产物，非物理意义上的力量。翻译要传达超自然的能量感，不是简单的肌肉力量",
+        "avoid": ["muscles", "strength", "physical"],
+        "cultural_note": "Internal energy is the invisible reservoir of power cultivated through years of meditation and breathing exercises. It is the single most important factor determining a martial artist's level — raw physical strength means nothing without it. A frail old monk with deep internal energy can defeat a muscular warrior with ease. It can be transferred between people, stolen, or depleted."
+      }
+    }
+  },
+  {
+    "concept": "轻功",
+    "context": "武侠中的身法绝技，能让人飞檐走壁、踏水而行",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "lightness skill",
+          "the art of levitation",
+          "gravity-defying movement"
+        ],
+        "bad": ["light work", "light kung fu", "lightweight skill"],
+        "principle": "轻功是武侠中最具视觉冲击力的武功之一。翻译要传达超越物理限制的轻盈感，不是'轻的功夫'",
+        "avoid": ["light work", "lightweight", "light kung fu"],
+        "cultural_note": "Lightness skill allows martial artists to leap across rooftops, run on water, and move with supernatural agility. It is not true flight but rather the ability to make oneself virtually weightless by channeling internal energy. In film and TV, it produces the iconic 'wire-fu' scenes of warriors gliding through bamboo forests. Every major martial arts style includes some form of lightness training."
+      }
+    }
+  },
+  {
+    "concept": "真气",
+    "context": "经过修炼的纯净气息，在体内经脉中运行",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": ["true qi", "vital energy", "refined qi"],
+        "bad": ["true gas", "real air", "genuine breath"],
+        "principle": "真气是比内力更精微的概念，强调纯净和正宗。保留 qi 不翻译，前面加修饰词",
+        "avoid": ["gas", "air", "breath", "chi"],
+        "cultural_note": "True qi is a purified form of life energy that circulates through the body's meridian channels. It derives from traditional Chinese medicine but in wuxia fiction takes on supernatural properties — warriors can project it outward as devastating force, heal injuries, or even extend their lifespan. The word 'qi' has entered English and should be preserved rather than translated."
+      }
+    }
+  },
+  {
+    "concept": "点穴",
+    "context": "用指力封闭对方穴道，使其麻痹或无法动弹",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "pressure point strike",
+          "acupoint sealing",
+          "striking the vital points"
+        ],
+        "bad": ["dot cave", "point hole", "press acupuncture"],
+        "principle": "点穴是高精度攻击，需要极深的内力和人体经脉知识。翻译要体现技术含量和精准性",
+        "avoid": ["dot", "cave", "hole"],
+        "cultural_note": "Pressure point striking is based on the traditional Chinese medical concept of acupuncture points (acupoints) along the body's meridians. In wuxia, a master can tap specific points to paralyze limbs, seal a person's internal energy, cause delayed death, or even erase memories. Victims typically freeze in place like statues until someone 'unseals' them. It requires years of anatomical study and pinpoint accuracy."
+      }
+    }
+  },
+  {
+    "concept": "闭关修炼",
+    "context": "武者隔绝外界，独自潜心修炼武功或疗伤",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "secluded meditation",
+          "closed-door cultivation",
+          "retreat into seclusion"
+        ],
+        "bad": [
+          "close door practice",
+          "shut gate training",
+          "locked room exercise"
+        ],
+        "principle": "闭关是严肃的修行仪式，持续数月甚至数年。翻译要有修行感和仪式感，不是简单的'关门练习'",
+        "avoid": ["close door", "shut gate", "locked room"],
+        "cultural_note": "Secluded cultivation is a pivotal narrative device in wuxia stories. A martial artist withdraws from the world — often into a mountain cave or sealed chamber — to break through to a new level of mastery. During this period they are completely vulnerable, so trusted disciples guard the entrance. Emerging from seclusion often marks a dramatic power-up in the story, sometimes spanning years of in-world time."
+      }
+    }
+  },
+  {
+    "concept": "掌门人",
+    "context": "武术门派的最高领导者，负责门派一切事务",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": ["Sect Leader", "Head of the Sect", "the Sect Master"],
+        "bad": ["palm door person", "gate keeper", "door master"],
+        "principle": "掌门人是门派最高领导者，大写 Sect Leader 表示正式头衔。不要直译'掌'和'门'的字面意思",
+        "avoid": ["palm", "gate keeper", "door"],
+        "cultural_note": "The Sect Leader is the supreme authority of a martial arts school (sect/clan), responsible for teaching, discipline, and representing the sect in the wider martial world. Succession is often the source of major plot conflict — whether by merit, lineage, or treachery. The leader typically possesses the sect's most guarded techniques and holds the sect's founding weapon or token of authority."
+      }
+    }
+  },
+  {
+    "concept": "侠义",
+    "context": "武侠核心价值观——以武行义、扶弱锄强",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "chivalric righteousness",
+          "the code of the warrior",
+          "martial honor"
+        ],
+        "bad": ["hero justice", "knight meaning", "chivalry meaning"],
+        "principle": "侠义是武侠文化的灵魂，包含正义、牺牲、忠诚等多重含义。翻译要有分量感，不是简单的'正义'",
+        "avoid": ["hero justice", "knight meaning"],
+        "cultural_note": "Xia yi is the moral compass of the wuxia genre — a warrior's code that demands protecting the weak, honoring promises at any cost, and placing justice above personal gain or even survival. Unlike European chivalry, which served feudal lords, xia yi is fundamentally anti-authoritarian: the true hero often defies corrupt officials and unjust laws. Jin Yong's novels explore the tension between personal loyalty and greater righteousness as a central theme."
+      }
+    }
+  },
+  {
+    "concept": "武功秘籍",
+    "context": "记载绝世武功的珍贵典籍，是各方争夺的核心目标",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "martial arts manual",
+          "secret martial arts scripture",
+          "the forbidden fighting text"
+        ],
+        "bad": [
+          "kung fu secret book",
+          "martial arts cheat sheet",
+          "fighting secrets"
+        ],
+        "principle": "武功秘籍在武侠世界中是改变力量格局的至宝。翻译要有神秘感和珍贵感",
+        "avoid": ["cheat sheet", "cheat code", "kung fu book"],
+        "cultural_note": "Martial arts manuals are the MacGuffins of wuxia fiction — ancient texts containing techniques so powerful that their possessor could dominate the martial world. Entire wars are fought over them. Famous examples include the Nine Yin Manual and theErta Sutra in Jin Yong's novels. They are often written in cryptic language, hidden in impossible locations, or cursed so that practicing their techniques comes at a terrible cost."
+      }
+    }
+  },
+  {
+    "concept": "以毒攻毒",
+    "context": "用毒物或有害之法来治愈中毒或疾病",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "fight poison with poison",
+          "use venom to cure venom",
+          "counter toxin with toxin"
+        ],
+        "bad": [
+          "use poison attack poison",
+          "poison against poison",
+          "toxic fighting toxic"
+        ],
+        "principle": "以毒攻毒既是字面的解毒手法，也是比喻'以其人之道还治其人之身'。根据语境选择字面或比喻翻译",
+        "avoid": ["poison attack poison", "toxic fighting"],
+        "cultural_note": "This phrase operates on two levels in wuxia: literally, it describes a real technique in traditional Chinese medicine where a secondary poison neutralizes the first. Metaphorically, it means using an enemy's own tactics against them. Poison is a major element in wuxia — entire sects specialize in toxicology, and the Five Poisons Sect is a recurring antagonist faction."
+      }
+    }
+  },
+  {
+    "concept": "气沉丹田",
+    "context": "将气息沉入下腹丹田穴位，是发力和运功的基础",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "sink your qi to the dantian",
+          "center your energy in the lower abdomen",
+          "draw your breath to the core"
+        ],
+        "bad": [
+          "gas sink elixir field",
+          "air goes down to belly",
+          "breathe into stomach"
+        ],
+        "principle": "丹田是道家修行概念中的能量中心，位于肚脐下方。保留 dantian 不翻译，或用 core/center 解释性翻译",
+        "avoid": ["gas", "elixir field", "stomach", "belly"],
+        "cultural_note": "The dantian (literally 'elixir field') is a focal point about three finger-widths below the navel, considered the body's energy center in Daoist cultivation. 'Sinking qi to the dantian' is the foundational instruction for any martial arts practice — the equivalent of 'take your stance' in Western boxing. It appears constantly in training scenes and is often shouted by masters to students mid-combat as a correction."
+      }
+    }
+  },
+  {
+    "concept": "刀光剑影",
+    "context": "形容激烈战斗场面，刀剑闪烁、杀气弥漫",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "a storm of flashing blades",
+          "the glint of swords and sabers",
+          "blades clashing in a blur of steel"
+        ],
+        "bad": [
+          "knife light sword shadow",
+          "blade light sword shadow",
+          "cutting light sword dark"
+        ],
+        "principle": "刀光剑影是战斗场面的诗意描写，翻译要有动感和画面感。绝不能逐字翻译'刀+光+剑+影'",
+        "avoid": ["knife light", "sword shadow", "blade light"],
+        "cultural_note": "This four-character idiom paints a vivid picture of combat — the flash of dao (single-edged sabers) and the shadows cast by jian (double-edged swords) moving at lethal speed. It is used both literally to describe fight scenes and figuratively to evoke a dangerous, turbulent world. Chinese distinguishes between dao (curved, chopping saber) and jian (straight, thrusting sword) — a distinction lost in English's generic 'sword.'"
+      }
+    }
+  },
+  {
+    "concept": "恩怨情仇",
+    "context": "恩情、怨恨、爱情、仇恨——武侠故事的核心人物关系",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "debts of gratitude and vengeance",
+          "bonds of love and hatred",
+          "the tangled web of loyalty and revenge"
+        ],
+        "bad": [
+          "grace grudge love hate",
+          "kindness resentment feeling revenge",
+          "favor complaint emotion hatred"
+        ],
+        "principle": "恩怨情仇是武侠叙事的情感四要素，翻译要有史诗感和纠缠感。不要逐字对应翻译",
+        "avoid": ["grace grudge", "complaint", "favor"],
+        "cultural_note": "This four-part phrase captures the emotional DNA of every wuxia story: en (debts of gratitude that must be repaid), yuan (wrongs that demand vengeance), qing (bonds of love and loyalty), and chou (blood feuds inherited across generations). A single character might owe their life to someone whose father killed their master — creating impossible moral dilemmas that drive the plot. These entanglements often span decades and generations."
+      }
+    }
+  },
+  {
+    "concept": "行侠仗义",
+    "context": "行走江湖、凭武力和正义感帮助弱者",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "to wander the land righting wrongs",
+          "to act as a knight-errant",
+          "to champion the downtrodden"
+        ],
+        "bad": [
+          "walk hero lean justice",
+          "do chivalry rely righteousness",
+          "travel hero support justice"
+        ],
+        "principle": "行侠仗义是武侠主角的核心行为模式——游走江湖、行善除恶。翻译要有浪漫英雄主义的气质",
+        "avoid": ["walk hero", "lean justice", "do chivalry"],
+        "cultural_note": "This phrase describes the lifestyle of the classic wuxia hero: a lone wanderer who roams the jianghu using martial arts to defend the helpless and punish the wicked — answerable to no authority but their own conscience. The closest Western parallel is the knight-errant of Arthurian legend, but the Chinese xia is typically a commoner or outcast, not a nobleman. This ideal has deep roots in Chinese history going back to the Warring States period."
+      }
+    }
+  },
+  {
+    "concept": "走火入魔",
+    "context": "修炼武功时出错，导致内力失控、精神错乱",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "qi deviation",
+          "succumbing to inner demons",
+          "going berserk from cultivation"
+        ],
+        "bad": [
+          "walking fire entering demon",
+          "catch fire become devil",
+          "go crazy from practice"
+        ],
+        "principle": "走火入魔是武侠/修仙共通的重要概念，指修炼失控的严重后果。翻译要传达危险性和不可控感",
+        "avoid": ["walking fire", "catch fire", "become devil"],
+        "cultural_note": "Qi deviation occurs when a martial artist forces their cultivation beyond safe limits, practices a corrupted technique, or loses concentration during a critical breakthrough. The consequences range from permanent loss of martial arts ability to violent insanity. It serves as a narrative check on power — the stronger the technique, the greater the risk. Characters under qi deviation often attack allies indiscriminately, making it one of the most feared conditions in the martial world."
+      }
+    }
+  },
+  {
+    "concept": "绝世武功",
+    "context": "天下无双的顶级武功，修炼者极少",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "peerless martial arts",
+          "unrivaled fighting technique",
+          "a legendary combat art"
+        ],
+        "bad": [
+          "absolute world martial arts",
+          "supreme kung fu",
+          "best fighting skill"
+        ],
+        "principle": "绝世武功强调独一无二、超越时代。翻译要有传说感和敬畏感，不是简单的'最好的武功'",
+        "avoid": ["absolute world", "best", "supreme kung fu"],
+        "cultural_note": "Peerless martial arts are techniques so advanced that only one or two people in each generation can master them. They are often the creation of legendary founders who have since died, leaving only incomplete records. Possessing such a technique makes someone both immensely powerful and a target for everyone else in the martial world. Famous examples include the Six Meridians Divine Sword and the Eighteen Dragon-Subduing Palms from Jin Yong's works."
+      }
+    }
+  },
+  {
+    "concept": "打抱不平",
+    "context": "看见不公之事挺身而出、为弱者出头",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "to stand up against injustice",
+          "to defend the underdog",
+          "to intervene on behalf of the wronged"
+        ],
+        "bad": [
+          "hit hold not flat",
+          "beat embrace unfair",
+          "punch the inequality"
+        ],
+        "principle": "打抱不平是侠客本能——见义勇为、路见不平拔刀相助。翻译要有行动感和正义感",
+        "avoid": ["hit hold", "beat embrace", "punch"],
+        "cultural_note": "This phrase captures the reflexive heroism expected of a true xia — when you see injustice, you act, regardless of personal risk or reward. It is the most fundamental test of a martial artist's character. In stories, a hero's journey often begins with a spontaneous act of standing up for a stranger being bullied by a more powerful foe, triggering a chain of consequences that draws them into the larger conflict."
+      }
+    }
+  },
+  {
+    "concept": "青出于蓝",
+    "context": "徒弟的成就超越师父，后辈超越前辈",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "the student surpasses the master",
+          "the apprentice outshines the teacher",
+          "indigo extracted from blue, yet bluer than blue"
+        ],
+        "bad": [
+          "green comes from blue",
+          "blue out of blue",
+          "young surpass old"
+        ],
+        "principle": "青出于蓝是师徒叙事的高潮时刻。翻译要有传承感和超越感。'the student surpasses the master' 是最通用的选择",
+        "avoid": ["green comes from", "blue out of blue"],
+        "cultural_note": "This idiom — originally from the philosopher Xunzi — literally means 'indigo is extracted from the indigo plant, yet it is deeper than the plant itself.' In wuxia, the master-disciple relationship is sacred and central to the story. The moment a student surpasses their master is both a triumph and a bittersweet milestone. A good master celebrates it; a petty master fears it. This dynamic drives countless wuxia plotlines about jealousy, betrayal, and legacy."
+      }
+    }
+  },
+  {
+    "concept": "一代宗师",
+    "context": "某一时代武学造诣最高、影响力最大的武术大师",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "wuxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "grandmaster of a generation",
+          "a once-in-a-lifetime master",
+          "the greatest master of the age"
+        ],
+        "bad": [
+          "one generation ancestor master",
+          "a generation of masters",
+          "one era grandpa teacher"
+        ],
+        "principle": "一代宗师是武侠世界的最高个人荣誉。翻译要有历史厚重感和唯一性。Wong Kar-wai 电影英文名 The Grandmaster 可参考",
+        "avoid": ["ancestor master", "grandpa teacher", "one generation"],
+        "cultural_note": "A grandmaster of a generation is the highest individual honor in the martial world — someone whose skill, wisdom, and moral character define an entire era. The title is never self-claimed; it is bestowed by universal recognition after a lifetime of achievement. Wong Kar-wai's 2013 film 'The Grandmaster' (yi dai zong shi) brought this concept to global audiences through the story of Ip Man, Bruce Lee's teacher."
+      }
+    }
+  }
+]
