@@ -142,6 +142,12 @@
             >
               修仙网文 Demo
             </button>
+            <button
+              onclick="loadDemo('game')"
+              class="px-3 py-1.5 text-xs rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition border border-accent/20"
+            >
+              游戏对白 Demo
+            </button>
           </div>
         </div>
 
@@ -442,6 +448,7 @@
       const DEMOS = {
         palace: `皇上，臣妾做不到啊！\n本宫乏了，退下吧。\n冤家路窄，今日就让本王会会你。\n你好大的胆子，竟敢在太岁头上动土！\n三十年河东，三十年河西，莫欺少年穷。\n知人知面不知心，后宫之中，谁是敌谁是友？\n来人，将她打入冷宫！\n娘娘请安，奴才给您请安了。\n皇上翻了淑妃的牌子，今晚侍寝。\n赐死，赐她三尺白绫。`,
         xianxia: `师兄，我的灵根资质太差，恐怕无法筑基。\n金丹已碎，元婴即将成形，此刻不能有丝毫分心。\n道心不稳，心魔趁虚而入，若不能斩除，修为将全废。\n渡劫雷霆降临，天道不容逆天改命之人。\n灵石已经耗尽，丹田中的灵气所剩无几。\n御剑飞行千里，只为赶在飞升之前见她最后一面。\n结丹之路凶险万分，十人中仅有一人能成。\n仙人之上，还有天仙、金仙、大罗金仙之分。`,
+        game: `少侠，你的灵根资质不错，可愿拜入我青云门？\n师父，弟子愿以毕生修炼道心，绝不辜负门派期望。\n此剑名为"断水"，乃上古仙人以天外陨铁铸造，可斩一切心魔。\n前方妖气冲天，看来有高阶妖兽在此渡劫。\n道友请留步，贫道有一事相求。\n你这走火入魔之人，休要在此撒野！\n江湖险恶，你一个筑基期的小修士，如何能独闯万妖山？\n以你金丹期的修为，要对付这元婴老怪，怕是力有不逮。`,
       };
 
       const GOOGLE_TRANSLATE = {
@@ -467,12 +474,23 @@
           "The road to tying the pill is extremely dangerous, only one in ten can succeed.",
           "Above the immortals, there are also distinctions of heavenly immortals, golden immortals, and great Luo golden immortals.",
         ],
+        game: [
+          "Young hero, your spiritual root quality is good, are you willing to worship and enter my Qingyun Gate?",
+          "Master, the disciple is willing to cultivate the Dao heart for a lifetime, and will never fail the expectations of the sect.",
+          'This sword is called "Broken Water", it was forged by ancient immortals with extraterrestrial meteorite iron, and can cut all heart demons.',
+          "There is a monstrous demonic energy ahead, it seems there is a high-level demon beast undergoing tribulation here.",
+          "Taoist friend please stay, this poor Taoist has something to ask.",
+          "You, a person who has gone fire and entered the devil, don't be wild here!",
+          "The rivers and lakes are dangerous, you, a small cultivator in the foundation building period, how can you alone break into the Ten Thousand Demon Mountain?",
+          "With your golden pill period cultivation, to deal with this original baby old monster, I'm afraid you are not up to the task.",
+        ],
       };
 
       function loadDemo(type) {
         document.getElementById("content-input").value = DEMOS[type];
+        const typeMap = { palace: "drama", xianxia: "novel", game: "game" };
         document.getElementById("content-type").value =
-          type === "palace" ? "drama" : "novel";
+          typeMap[type] || "drama";
       }
 
       // ---- API ----
