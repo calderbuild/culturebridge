@@ -1,0 +1,6 @@
+.playwright-mcp/
+*.pdf
+__pycache__/
+.env
+.DS_Store
+node_modules/
