@@ -717,20 +717,38 @@
         const content = document.getElementById("content-input").value;
         let html = "";
         const lines = content.split("\n");
+        const sorted = [...ALL_CONCEPTS].sort((a, b) => b.length - a.length);
         lines.forEach((line) => {
-          let al = escHtml(line);
-          // Sort concepts by length desc so longer phrases match first
-          const sorted = [...ALL_CONCEPTS].sort((a, b) => b.length - a.length);
+          // Find all concept positions in the raw line, then build HTML segments
+          const marks = [];
+          const used = new Array(line.length).fill(false);
           for (const concept of sorted) {
-            if (line.includes(concept)) {
-              const ec = escHtml(concept);
-              al = al.replace(
-                ec,
-                `<span class="culture-mark scan-glow" data-concept="${escAttr(concept)}" onmouseenter="showCard(this,event)" onmouseleave="hideCard()">${ec}</span>`,
-              );
+            let idx = line.indexOf(concept);
+            while (idx !== -1) {
+              let overlap = false;
+              for (let k = idx; k < idx + concept.length; k++) {
+                if (used[k]) {
+                  overlap = true;
+                  break;
+                }
+              }
+              if (!overlap) {
+                marks.push({ start: idx, end: idx + concept.length, concept });
+                for (let k = idx; k < idx + concept.length; k++) used[k] = true;
+              }
+              idx = line.indexOf(concept, idx + 1);
             }
           }
-          html += `<p class="mb-1.5">${al}</p>`;
+          marks.sort((a, b) => a.start - b.start);
+          let result = "";
+          let pos = 0;
+          for (const m of marks) {
+            if (m.start > pos) result += escHtml(line.slice(pos, m.start));
+            result += `<span class="culture-mark scan-glow" data-concept="${escAttr(m.concept)}" onmouseenter="showCard(this,event)" onmouseleave="hideCard()">${escHtml(m.concept)}</span>`;
+            pos = m.end;
+          }
+          if (pos < line.length) result += escHtml(line.slice(pos));
+          html += `<p class="mb-1.5">${result}</p>`;
         });
         document.getElementById("annotated-text").innerHTML = html;
         document.getElementById("source-input").classList.add("hidden");
