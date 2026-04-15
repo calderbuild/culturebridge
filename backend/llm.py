@@ -2,6 +2,7 @@
 
 import json
 import logging
+import time
 
 import requests
 
@@ -13,6 +14,10 @@ from backend.config import (
 )
 
 logger = logging.getLogger("culturebridge.llm")
+
+MAX_RETRIES = 3
+RETRY_BACKOFF = [2, 4, 8]
+RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 
 
 def strip_markdown_fences(text: str) -> str:
@@ -32,7 +37,7 @@ def _call_openrouter(
     temperature: float = 0.3,
     response_format: str = None,
 ) -> str:
-    """Call OpenRouter API (OpenAI-compatible)."""
+    """Call OpenRouter API with exponential backoff retry."""
     url = f"{OPENROUTER_BASE_URL}/chat/completions"
     payload = {
         "model": model,
@@ -49,13 +54,61 @@ def _call_openrouter(
         "HTTP-Referer": "https://github.com/calderbuild/culturebridge",
         "X-Title": "CultureBridge",
     }
-    resp = requests.post(url, json=payload, headers=headers, timeout=180)
-    resp.raise_for_status()
-    data = resp.json()
-    content = data["choices"][0]["message"]["content"]
-    if not content:
-        raise RuntimeError(f"{model} returned empty response")
-    return content
+
+    last_error = None
+    for attempt in range(MAX_RETRIES):
+        try:
+            resp = requests.post(url, json=payload, headers=headers, timeout=180)
+
+            if resp.status_code in RETRYABLE_STATUS_CODES and attempt < MAX_RETRIES - 1:
+                wait = RETRY_BACKOFF[attempt]
+                logger.warning(
+                    "LLM call %s returned %d, retrying in %ds (attempt %d/%d)",
+                    model,
+                    resp.status_code,
+                    wait,
+                    attempt + 1,
+                    MAX_RETRIES,
+                )
+                time.sleep(wait)
+                continue
+
+            resp.raise_for_status()
+            data = resp.json()
+            content = data["choices"][0]["message"]["content"]
+            if not content:
+                raise RuntimeError(f"{model} returned empty response")
+            return content
+
+        except requests.exceptions.Timeout:
+            last_error = TimeoutError(f"{model} request timed out")
+            if attempt < MAX_RETRIES - 1:
+                wait = RETRY_BACKOFF[attempt]
+                logger.warning(
+                    "LLM call %s timed out, retrying in %ds (attempt %d/%d)",
+                    model,
+                    wait,
+                    attempt + 1,
+                    MAX_RETRIES,
+                )
+                time.sleep(wait)
+                continue
+
+        except requests.exceptions.ConnectionError as e:
+            last_error = e
+            if attempt < MAX_RETRIES - 1:
+                wait = RETRY_BACKOFF[attempt]
+                logger.warning(
+                    "LLM call %s connection error, retrying in %ds (attempt %d/%d)",
+                    model,
+                    wait,
+                    attempt + 1,
+                    MAX_RETRIES,
+                )
+                time.sleep(wait)
+                continue
+
+    raise RuntimeError(f"{model} failed after {MAX_RETRIES} attempts: {last_error}")
 
 
 def call_deepseek(
@@ -104,15 +157,14 @@ def parse_json_response(text: str) -> dict | list:
 
     # Last resort: fix common LLM JSON errors and retry
     fixed = cleaned
-    fixed = fixed.replace("'", '"')  # single quotes
-    fixed = fixed.replace(",}", "}")  # trailing comma in object
-    fixed = fixed.replace(",]", "]")  # trailing comma in array
+    fixed = fixed.replace("'", '"')
+    fixed = fixed.replace(",}", "}")
+    fixed = fixed.replace(",]", "]")
     try:
         return json.loads(fixed)
     except json.JSONDecodeError:
         pass
 
-    # If all parsing fails, return the raw text wrapped in a dict
     logger.warning(
         "Failed to parse JSON, returning raw text. First 200 chars: %s", cleaned[:200]
     )

@@ -100,6 +100,13 @@ def run(context: dict, scan_result: dict, match_result: dict) -> dict:
         tone=tone,
     )
 
+    # Build terminology lock from KB mappings — enforces consistency across chunks
+    terminology_lock = {}
+    for elem in match_result.get("enriched_elements", []):
+        mapping = elem.get("mapping")
+        if mapping and mapping.get("good"):
+            terminology_lock[elem["concept"]] = mapping["good"][0]
+
     # Split content into lines for line-by-line translation
     lines = [line.strip() for line in content.strip().split("\n") if line.strip()]
 
@@ -111,8 +118,17 @@ def run(context: dict, scan_result: dict, match_result: dict) -> dict:
         chunk = lines[i : i + chunk_size]
         numbered = "\n".join(f"{i + j + 1}. {line}" for j, line in enumerate(chunk))
 
+        # Inject terminology lock for chunks after the first
+        term_instruction = ""
+        if terminology_lock:
+            term_lines = "\n".join(f"  {k} → {v}" for k, v in terminology_lock.items())
+            term_instruction = f"\n\nTERMINOLOGY LOCK (use these exact translations — do not vary):\n{term_lines}\n"
+
         messages = [
-            {"role": "user", "content": f"Translate the following lines:\n\n{numbered}"}
+            {
+                "role": "user",
+                "content": f"{term_instruction}Translate the following lines:\n\n{numbered}",
+            }
         ]
         response = call_claude(
             messages, system=system, max_tokens=6000, temperature=0.3
@@ -123,6 +139,19 @@ def run(context: dict, scan_result: dict, match_result: dict) -> dict:
             all_translations.extend(chunk_result)
         elif isinstance(chunk_result, dict) and "translations" in chunk_result:
             all_translations.extend(chunk_result["translations"])
+
+        # After first chunk, extract any new term translations to lock for subsequent chunks
+        if i == 0 and isinstance(chunk_result, (list, dict)):
+            items = (
+                chunk_result
+                if isinstance(chunk_result, list)
+                else chunk_result.get("translations", [])
+            )
+            for t in items:
+                orig = t.get("original", "")
+                for concept in terminology_lock:
+                    if concept in orig and concept not in terminology_lock:
+                        terminology_lock[concept] = t.get("translation", "")
 
     # Separate cultural notes
     cultural_notes = [

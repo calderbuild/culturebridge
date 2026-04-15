@@ -1,4 +1,7 @@
-"""5-Agent cultural adaptation pipeline: Scanner → Matcher → Translator → Reviewer → Finalizer."""
+"""5-Agent cultural adaptation pipeline: Scanner -> Matcher -> Translator -> Reviewer -> Finalizer.
+
+Graceful degradation: Scanner and Translator are critical (pipeline stops on failure).
+Matcher, Reviewer, and Finalizer degrade gracefully — partial results are returned."""
 
 import logging
 import time
@@ -17,15 +20,6 @@ class PipelineEvent:
     timestamp: float = field(default_factory=time.time)
 
 
-AGENTS = [
-    ("scanner", "文化元素扫描", 0.05, 0.20),
-    ("matcher", "知识库匹配 + 文化风险评估", 0.20, 0.35),
-    ("translator", "文化适配翻译", 0.35, 0.60),
-    ("reviewer", "审校", 0.60, 0.80),
-    ("finalizer", "终稿 + 出海方案", 0.80, 0.95),
-]
-
-
 def run_pipeline(
     content: str,
     content_type: str = "drama",
@@ -34,19 +28,6 @@ def run_pipeline(
     on_event: Callable[[PipelineEvent], None] = None,
     job_id: str = None,
 ) -> dict:
-    """Run the 5-agent cultural adaptation pipeline.
-
-    Args:
-        content: Chinese text content (script, novel chapter, game dialogue)
-        content_type: "drama", "novel", or "game"
-        target_lang: Target language code ("en", "ja", "ko")
-        target_market: Target market ("us", "sea", "jp", "kr", "eu")
-        on_event: Callback for SSE progress events
-        job_id: Job identifier
-
-    Returns:
-        Dict with all pipeline outputs (translation, reports, etc.)
-    """
     from backend.agents import (
         cultural_scanner,
         kb_matcher,
@@ -59,7 +40,7 @@ def run_pipeline(
         if on_event:
             on_event(PipelineEvent(stage, message, progress, data or {}))
 
-    result = {"stages": {}, "job_id": job_id}
+    result = {"stages": {}, "job_id": job_id, "degraded": []}
     context = {
         "content": content,
         "content_type": content_type,
@@ -67,7 +48,7 @@ def run_pipeline(
         "target_market": target_market,
     }
 
-    # Agent 1: Cultural Scanner
+    # ---- Agent 1: Cultural Scanner (CRITICAL — fails pipeline) ----
     emit("scanner", "正在扫描文化元素...", 0.05)
     t0 = time.time()
     try:
@@ -85,30 +66,44 @@ def run_pipeline(
         {"count": len(scan_result.get("cultural_elements", []))},
     )
 
-    # Agent 2: Knowledge Base Matcher + Risk Assessment
+    # ---- Agent 2: KB Matcher (DEGRADABLE — falls back to empty enrichment) ----
     emit("matcher", "正在匹配知识库...", 0.20)
     t0 = time.time()
     try:
         match_result = kb_matcher.run(context, scan_result)
     except Exception as e:
-        logger.error("KB matcher failed: %s", e, exc_info=True)
-        emit("matcher", f"匹配失败: {e}", 0.20, {"level": "error"})
-        raise RuntimeError(f"KB matcher failed: {e}") from e
-    logger.info("Matcher completed in %.1fs", time.time() - t0)
-    result["stages"]["matcher"] = match_result
-    kb_hits = sum(
-        1
-        for e in match_result.get("enriched_elements", [])
-        if e.get("source") == "knowledge_base"
-    )
-    emit(
-        "matcher",
-        f"知识库命中 {kb_hits} 条，生成文化风险报告",
-        0.35,
-        {"kb_hits": kb_hits},
-    )
+        logger.warning("KB matcher failed, degrading: %s", e, exc_info=True)
+        match_result = {
+            "enriched_elements": [],
+            "risk_report": {
+                "overall_risk_level": "unknown",
+                "summary": "知识库匹配失败，跳过风险评估",
+                "risks": [],
+            },
+        }
+        result["degraded"].append("matcher")
+        emit(
+            "matcher",
+            "知识库匹配失败，使用降级模式",
+            0.35,
+            {"level": "warning", "degraded": True},
+        )
+    else:
+        logger.info("Matcher completed in %.1fs", time.time() - t0)
+        result["stages"]["matcher"] = match_result
+        kb_hits = sum(
+            1
+            for e in match_result.get("enriched_elements", [])
+            if e.get("source") == "knowledge_base"
+        )
+        emit(
+            "matcher",
+            f"知识库命中 {kb_hits} 条，生成文化风险报告",
+            0.35,
+            {"kb_hits": kb_hits},
+        )
 
-    # Agent 3: Cultural Adaptation Translation
+    # ---- Agent 3: Translator (CRITICAL — fails pipeline) ----
     emit("translator", "正在进行文化适配翻译...", 0.35)
     t0 = time.time()
     try:
@@ -121,26 +116,37 @@ def run_pipeline(
     result["stages"]["translator"] = translation_result
     emit("translator", "文化适配翻译完成", 0.60)
 
-    # Agent 4: Review
+    # ---- Agent 4: Reviewer (DEGRADABLE — skips review) ----
     emit("reviewer", "审校中...", 0.60)
     t0 = time.time()
     try:
         review_result = reviewer.run(context, translation_result, match_result)
     except Exception as e:
-        logger.error("Reviewer failed: %s", e, exc_info=True)
-        emit("reviewer", f"审校失败: {e}", 0.60, {"level": "error"})
-        raise RuntimeError(f"Reviewer failed: {e}") from e
-    logger.info("Reviewer completed in %.1fs", time.time() - t0)
-    result["stages"]["reviewer"] = review_result
-    issues_count = len(review_result.get("issues", []))
-    emit(
-        "reviewer",
-        f"审校完成，发现 {issues_count} 个问题",
-        0.80,
-        {"issues": issues_count},
-    )
+        logger.warning("Reviewer failed, degrading: %s", e, exc_info=True)
+        review_result = {
+            "issues": [],
+            "overall_quality": "unreviewed",
+            "summary": "审校跳过",
+        }
+        result["degraded"].append("reviewer")
+        emit(
+            "reviewer",
+            "审校失败，跳过审校环节",
+            0.80,
+            {"level": "warning", "degraded": True},
+        )
+    else:
+        logger.info("Reviewer completed in %.1fs", time.time() - t0)
+        result["stages"]["reviewer"] = review_result
+        issues_count = len(review_result.get("issues", []))
+        emit(
+            "reviewer",
+            f"审校完成，发现 {issues_count} 个问题",
+            0.80,
+            {"issues": issues_count},
+        )
 
-    # Agent 5: Finalizer + Promo
+    # ---- Agent 5: Finalizer (DEGRADABLE — returns raw translation) ----
     emit("finalizer", "生成终稿和出海方案...", 0.80)
     t0 = time.time()
     try:
@@ -148,16 +154,30 @@ def run_pipeline(
             context, translation_result, review_result, match_result
         )
     except Exception as e:
-        logger.error("Finalizer failed: %s", e, exc_info=True)
-        emit("finalizer", f"终稿生成失败: {e}", 0.80, {"level": "error"})
-        raise RuntimeError(f"Finalizer failed: {e}") from e
-    logger.info("Finalizer completed in %.1fs", time.time() - t0)
-    result["stages"]["finalizer"] = final_result
-    emit("finalizer", "终稿和出海方案生成完成", 0.95)
+        logger.warning("Finalizer failed, degrading: %s", e, exc_info=True)
+        final_result = {
+            "final_translation": translation_result.get("translations", []),
+            "decision_report": {"decisions": [], "summary": "终稿生成失败"},
+            "promo_materials": {"social_posts": [], "hashtag_suggestions": []},
+            "adaptation_suggestions": {"suggestions": [], "summary": ""},
+        }
+        result["degraded"].append("finalizer")
+        emit(
+            "finalizer",
+            "终稿生成失败，使用原始翻译",
+            0.95,
+            {"level": "warning", "degraded": True},
+        )
+    else:
+        logger.info("Finalizer completed in %.1fs", time.time() - t0)
+        result["stages"]["finalizer"] = final_result
+        emit("finalizer", "终稿和出海方案生成完成", 0.95)
 
-    # Assemble final output
+    # Assemble output
     result["output"] = {
-        "translation": final_result.get("final_translation"),
+        "translation": final_result.get(
+            "final_translation", translation_result.get("translations", [])
+        ),
         "decision_report": final_result.get("decision_report"),
         "risk_report": match_result.get("risk_report"),
         "cultural_notes": translation_result.get("cultural_notes"),
@@ -165,5 +185,18 @@ def run_pipeline(
         "promo_materials": final_result.get("promo_materials"),
     }
 
-    emit("complete", "全部完成！", 1.0, {"output_keys": list(result["output"].keys())})
+    status_msg = (
+        "全部完成！"
+        if not result["degraded"]
+        else f"完成（{len(result['degraded'])} 个环节降级）"
+    )
+    emit(
+        "complete",
+        status_msg,
+        1.0,
+        {
+            "output_keys": list(result["output"].keys()),
+            "degraded": result["degraded"],
+        },
+    )
     return result
