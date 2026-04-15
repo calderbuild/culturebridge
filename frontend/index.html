@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CultureBridge — AI 文化顾问引擎</title>
+    <title>CultureBridge — AI 文化出海工作站</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap"
@@ -27,8 +27,8 @@
                 dim: "rgba(201,169,110,0.12)",
                 glow: "rgba(201,169,110,0.25)",
               },
-              jade: { DEFAULT: "#5a9e7a", dim: "rgba(90,158,122,0.15)" },
-              cinnabar: { DEFAULT: "#c44e4e", dim: "rgba(196,78,78,0.15)" },
+              jade: { DEFAULT: "#5a9e7a" },
+              cinnabar: { DEFAULT: "#c44e4e" },
             },
             fontFamily: {
               display: ['"Noto Serif SC"', '"Source Serif 4"', "serif"],
@@ -49,6 +49,44 @@
         color: #d4d4e0;
         overflow-x: hidden;
       }
+      .step-panel {
+        position: absolute;
+        inset: 0;
+        transition:
+          transform 0.4s ease,
+          opacity 0.4s ease;
+      }
+      .step-panel.left {
+        transform: translateX(-100%);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .step-panel.right {
+        transform: translateX(100%);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .step-panel.active {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .chip {
+        transition: all 0.15s ease;
+      }
+      .chip:hover {
+        transform: translateY(-1px);
+      }
+      .chip.selected {
+        background: rgba(201, 169, 110, 0.2);
+        border-color: #c9a96e;
+        color: #c9a96e;
+      }
+      .platform-check input:checked + span {
+        background: rgba(201, 169, 110, 0.15);
+        border-color: rgba(201, 169, 110, 0.5);
+        color: #c9a96e;
+      }
       .culture-mark {
         background: rgba(201, 169, 110, 0.12);
         border-bottom: 2px solid rgba(201, 169, 110, 0.4);
@@ -60,41 +98,6 @@
       .culture-mark:hover {
         background: rgba(201, 169, 110, 0.25);
         border-bottom-color: #c9a96e;
-      }
-      .culture-card {
-        position: fixed;
-        z-index: 50;
-        width: 340px;
-        background: #1a1a2e;
-        border: 1px solid rgba(201, 169, 110, 0.3);
-        border-radius: 12px;
-        padding: 16px;
-        box-shadow:
-          0 20px 60px rgba(0, 0, 0, 0.6),
-          0 0 30px rgba(201, 169, 110, 0.08);
-        transform: scale(0.95) translateY(4px);
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.2s ease;
-      }
-      .culture-card.visible {
-        transform: scale(1) translateY(0);
-        opacity: 1;
-        pointer-events: auto;
-      }
-      .trans-line {
-        animation: lineIn 0.4s ease forwards;
-        opacity: 0;
-      }
-      @keyframes lineIn {
-        from {
-          opacity: 0;
-          transform: translateX(8px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
       }
       .scan-glow {
         animation: glowPulse 1.5s ease-in-out;
@@ -111,6 +114,20 @@
         100% {
           background: rgba(201, 169, 110, 0.12);
           border-bottom-color: rgba(201, 169, 110, 0.4);
+        }
+      }
+      .trans-line {
+        animation: lineIn 0.4s ease forwards;
+        opacity: 0;
+      }
+      @keyframes lineIn {
+        from {
+          opacity: 0;
+          transform: translateX(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
         }
       }
       .agent-dot {
@@ -141,20 +158,30 @@
           opacity: 1;
         }
       }
-      .risk-high {
-        background: rgba(196, 78, 78, 0.15);
-        color: #e87171;
-        border: 1px solid rgba(196, 78, 78, 0.3);
+      .pub-card {
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
       }
-      .risk-medium {
-        background: rgba(234, 179, 8, 0.12);
-        color: #eab308;
-        border: 1px solid rgba(234, 179, 8, 0.25);
+      .pub-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
       }
-      .risk-low {
-        background: rgba(90, 158, 122, 0.15);
-        color: #5a9e7a;
-        border: 1px solid rgba(90, 158, 122, 0.3);
+      .modal-bg {
+        transition: opacity 0.3s ease;
+      }
+      .modal-content {
+        transition:
+          transform 0.3s ease,
+          opacity 0.3s ease;
+      }
+      .modal-bg.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .modal-bg.hidden .modal-content {
+        transform: translateY(20px);
+        opacity: 0;
       }
       ::-webkit-scrollbar {
         width: 4px;
@@ -168,15 +195,20 @@
       }
       textarea:focus,
       select:focus,
+      input:focus,
       button:focus-visible {
         outline: none;
         box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.4);
       }
       @media (prefers-reduced-motion: reduce) {
+        .step-panel,
+        .chip,
+        .pub-card,
+        .modal-bg,
+        .modal-content,
         .culture-mark,
-        .culture-card,
-        .trans-line,
         .scan-glow,
+        .trans-line,
         .agent-dot {
           animation: none !important;
           transition: none !important;
@@ -185,83 +217,41 @@
     </style>
   </head>
   <body class="min-h-screen flex flex-col">
-    <header class="flex-shrink-0 border-b border-ink-700/50 px-5 py-3">
-      <div
-        class="max-w-[1400px] mx-auto flex items-center justify-between gap-4 flex-wrap"
-      >
+    <!-- Header -->
+    <header
+      class="flex-shrink-0 border-b border-ink-700/50 px-5 py-3 z-20 relative"
+    >
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <span class="font-display text-gold text-lg font-bold tracking-wider"
             >CultureBridge</span
           >
           <span class="text-[10px] text-ink-600 hidden sm:inline"
-            >AI 文化顾问引擎</span
+            >一站式文化出海工作站</span
           >
         </div>
-        <div class="flex items-center gap-2 flex-wrap">
-          <select
-            id="content-type"
-            class="bg-ink-800 border border-ink-700 rounded px-2 py-1 text-xs text-gray-400"
-          >
-            <option value="drama">短剧</option>
-            <option value="novel">网文</option>
-            <option value="game">游戏</option>
-          </select>
-          <select
-            id="target-lang"
-            class="bg-ink-800 border border-ink-700 rounded px-2 py-1 text-xs text-gray-400"
-          >
-            <option value="en">EN</option>
-            <option value="ja">JA</option>
-            <option value="ko">KO</option>
-          </select>
-          <select
-            id="target-market"
-            class="bg-ink-800 border border-ink-700 rounded px-2 py-1 text-xs text-gray-400"
-          >
-            <option value="us">US</option>
-            <option value="sea">SEA</option>
-            <option value="jp">JP</option>
-            <option value="kr">KR</option>
-            <option value="eu">EU</option>
-          </select>
-          <div class="w-px h-5 bg-ink-700 mx-1"></div>
-          <button
-            onclick="loadDemo('palace')"
-            class="px-2 py-1 text-[10px] rounded bg-gold/10 text-gold/70 hover:text-gold hover:bg-gold/20 transition"
-          >
-            宫廷剧
-          </button>
-          <button
-            onclick="loadDemo('xianxia')"
-            class="px-2 py-1 text-[10px] rounded bg-gold/10 text-gold/70 hover:text-gold hover:bg-gold/20 transition"
-          >
-            修仙
-          </button>
-          <button
-            onclick="loadDemo('game')"
-            class="px-2 py-1 text-[10px] rounded bg-gold/10 text-gold/70 hover:text-gold hover:bg-gold/20 transition"
-          >
-            游戏
-          </button>
-          <div class="w-px h-5 bg-ink-700 mx-1"></div>
-          <button
-            id="start-btn"
-            onclick="startAnalysis()"
-            class="px-4 py-1.5 text-xs font-medium rounded bg-gold text-ink-950 hover:bg-gold-light transition"
-          >
-            文化 X 光
-          </button>
+        <div id="step-indicator" class="flex items-center gap-2 text-[11px]">
+          <span id="si-1" class="text-gold font-medium">1 选择</span>
+          <span class="text-ink-600">&#8594;</span>
+          <span id="si-2" class="text-ink-600">2 处理</span>
+          <span class="text-ink-600">&#8594;</span>
+          <span id="si-3" class="text-ink-600">3 发布</span>
         </div>
       </div>
     </header>
 
+    <!-- Pipeline bar (Step 2 only) -->
     <div
       id="pipeline-bar"
-      class="flex-shrink-0 border-b border-ink-700/30 px-5 py-1.5 hidden"
+      class="flex-shrink-0 border-b border-ink-700/30 px-5 py-1.5 hidden z-10 relative"
     >
       <div
-        class="max-w-[1400px] mx-auto flex items-center gap-6 text-[10px] text-gray-500"
+        class="max-w-6xl mx-auto flex items-center gap-6 text-[10px] text-gray-500"
       >
+        <div id="dot-creator" class="flex items-center gap-1.5 hidden">
+          <div class="agent-dot pending"></div>
+          <span>生成</span>
+        </div>
         <div class="flex items-center gap-1.5">
           <div id="dot-scanner" class="agent-dot pending"></div>
           <span>扫描</span>
@@ -291,121 +281,411 @@
       </div>
     </div>
 
-    <main class="flex-1 flex min-h-0" style="height: calc(100vh - 100px)">
-      <section class="w-1/2 border-r border-ink-700/30 flex flex-col">
-        <div
-          class="px-5 py-2 border-b border-ink-700/20 flex items-center justify-between"
-        >
-          <span
-            class="text-[11px] text-gray-500 font-medium tracking-wide uppercase"
-            >原文 Source</span
-          >
-          <span id="char-count" class="text-[10px] text-gray-600">0 字</span>
-        </div>
-        <div id="source-input" class="flex-1 flex flex-col min-h-0">
-          <textarea
-            id="content-input"
-            placeholder="粘贴中文剧本、网文章节或游戏对白..."
-            oninput="updateCharCount()"
-            class="flex-1 bg-transparent p-5 text-sm text-gray-300 placeholder-ink-600 resize-none border-none leading-relaxed"
-          ></textarea>
-        </div>
-        <div id="source-annotated" class="flex-1 overflow-y-auto p-5 hidden">
-          <div
-            id="annotated-text"
-            class="text-sm text-gray-300 leading-loose"
-          ></div>
+    <!-- Steps Container -->
+    <main
+      class="flex-1 relative overflow-hidden"
+      style="height: calc(100vh - 52px)"
+    >
+      <!-- ==================== STEP 1: Mode Selection ==================== -->
+      <section id="step1" class="step-panel active">
+        <div class="h-full flex items-center justify-center px-5">
+          <div class="max-w-4xl w-full">
+            <div class="text-center mb-8">
+              <h1 class="font-display text-2xl text-white mb-2">
+                中国文化内容，一键出海
+              </h1>
+              <p class="text-sm text-gray-500">选择你的方式开始</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-5">
+              <!-- Beginner Mode -->
+              <div
+                class="bg-ink-800/50 border border-ink-700 rounded-2xl p-6 hover:border-gold/30 transition cursor-default"
+              >
+                <div class="flex items-center gap-2 mb-4">
+                  <span
+                    class="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center text-gold text-sm"
+                    >AI</span
+                  >
+                  <div>
+                    <p class="text-sm font-medium text-white">AI 帮你创作</p>
+                    <p class="text-[11px] text-gray-500">
+                      告诉 AI 你想推广什么
+                    </p>
+                  </div>
+                </div>
+                <input
+                  id="intent-input"
+                  type="text"
+                  placeholder="例：向美国年轻人介绍端午节文化..."
+                  class="w-full bg-ink-900 border border-ink-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 placeholder-ink-600 mb-3"
+                />
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  <button
+                    onclick="setIntent('端午节龙舟文化')"
+                    class="chip px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 hover:text-gold hover:border-gold/30"
+                  >
+                    端午节
+                  </button>
+                  <button
+                    onclick="setIntent('中国功夫武术文化')"
+                    class="chip px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 hover:text-gold hover:border-gold/30"
+                  >
+                    功夫
+                  </button>
+                  <button
+                    onclick="setIntent('中国茶道文化')"
+                    class="chip px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 hover:text-gold hover:border-gold/30"
+                  >
+                    茶文化
+                  </button>
+                  <button
+                    onclick="setIntent('中国书法艺术')"
+                    class="chip px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 hover:text-gold hover:border-gold/30"
+                  >
+                    书法
+                  </button>
+                  <button
+                    onclick="setIntent('敦煌壁画艺术')"
+                    class="chip px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 hover:text-gold hover:border-gold/30"
+                  >
+                    敦煌
+                  </button>
+                  <button
+                    onclick="setIntent('中华美食文化')"
+                    class="chip px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 hover:text-gold hover:border-gold/30"
+                  >
+                    美食
+                  </button>
+                </div>
+                <p class="text-[10px] text-gray-500 mb-2">选择发布平台</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <label class="platform-check"
+                    ><input
+                      type="checkbox"
+                      value="tiktok"
+                      checked
+                      class="hidden"
+                    /><span
+                      class="px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 cursor-pointer transition"
+                      >TikTok</span
+                    ></label
+                  >
+                  <label class="platform-check"
+                    ><input
+                      type="checkbox"
+                      value="instagram"
+                      checked
+                      class="hidden"
+                    /><span
+                      class="px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 cursor-pointer transition"
+                      >Instagram</span
+                    ></label
+                  >
+                  <label class="platform-check"
+                    ><input
+                      type="checkbox"
+                      value="youtube"
+                      class="hidden"
+                    /><span
+                      class="px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 cursor-pointer transition"
+                      >YouTube</span
+                    ></label
+                  >
+                  <label class="platform-check"
+                    ><input
+                      type="checkbox"
+                      value="twitter"
+                      class="hidden"
+                    /><span
+                      class="px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 cursor-pointer transition"
+                      >X</span
+                    ></label
+                  >
+                  <label class="platform-check"
+                    ><input
+                      type="checkbox"
+                      value="reddit"
+                      class="hidden"
+                    /><span
+                      class="px-2.5 py-1 text-[10px] rounded-full border border-ink-600 text-gray-400 cursor-pointer transition"
+                      >Reddit</span
+                    ></label
+                  >
+                </div>
+                <button
+                  onclick="startBeginner()"
+                  class="w-full bg-gold hover:bg-gold-light text-ink-950 font-medium py-2.5 rounded-lg transition text-sm"
+                >
+                  AI 生成 + 出海
+                </button>
+              </div>
+              <!-- Pro Mode -->
+              <div
+                class="bg-ink-800/50 border border-ink-700 rounded-2xl p-6 hover:border-gold/30 transition cursor-default"
+              >
+                <div class="flex items-center gap-2 mb-4">
+                  <span
+                    class="w-8 h-8 rounded-full bg-ink-700 flex items-center justify-center text-gray-400 text-sm font-display"
+                    >Pro</span
+                  >
+                  <div>
+                    <p class="text-sm font-medium text-white">粘贴你的内容</p>
+                    <p class="text-[11px] text-gray-500">
+                      剧本 / 网文 / 游戏对白
+                    </p>
+                  </div>
+                </div>
+                <textarea
+                  id="pro-input"
+                  rows="5"
+                  placeholder="粘贴中文剧本、网文章节或游戏对白..."
+                  class="w-full bg-ink-900 border border-ink-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 placeholder-ink-600 resize-none mb-3"
+                ></textarea>
+                <div class="flex gap-2 mb-3">
+                  <select
+                    id="pro-type"
+                    class="flex-1 bg-ink-900 border border-ink-700 rounded-lg px-2 py-1.5 text-xs text-gray-400"
+                  >
+                    <option value="drama">短剧</option>
+                    <option value="novel">网文</option>
+                    <option value="game">游戏</option>
+                  </select>
+                  <select
+                    id="pro-lang"
+                    class="flex-1 bg-ink-900 border border-ink-700 rounded-lg px-2 py-1.5 text-xs text-gray-400"
+                  >
+                    <option value="en">English</option>
+                    <option value="ja">Japanese</option>
+                    <option value="ko">Korean</option>
+                  </select>
+                  <select
+                    id="pro-market"
+                    class="flex-1 bg-ink-900 border border-ink-700 rounded-lg px-2 py-1.5 text-xs text-gray-400"
+                  >
+                    <option value="us">US</option>
+                    <option value="sea">SEA</option>
+                    <option value="jp">JP</option>
+                    <option value="kr">KR</option>
+                  </select>
+                </div>
+                <div class="flex gap-1.5 mb-3">
+                  <button
+                    onclick="loadProDemo('palace')"
+                    class="chip px-2 py-1 text-[10px] rounded border border-ink-600 text-gray-500 hover:text-gold hover:border-gold/30"
+                  >
+                    宫廷剧
+                  </button>
+                  <button
+                    onclick="loadProDemo('xianxia')"
+                    class="chip px-2 py-1 text-[10px] rounded border border-ink-600 text-gray-500 hover:text-gold hover:border-gold/30"
+                  >
+                    修仙
+                  </button>
+                  <button
+                    onclick="loadProDemo('game')"
+                    class="chip px-2 py-1 text-[10px] rounded border border-ink-600 text-gray-500 hover:text-gold hover:border-gold/30"
+                  >
+                    游戏
+                  </button>
+                </div>
+                <button
+                  onclick="startPro()"
+                  class="w-full bg-ink-700 hover:bg-ink-600 text-gray-200 font-medium py-2.5 rounded-lg transition text-sm"
+                >
+                  文化适配 + 出海
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="w-1/2 flex flex-col bg-ink-900/30">
-        <div
-          class="px-5 py-2 border-b border-ink-700/20 flex items-center justify-between"
-        >
-          <span
-            class="text-[11px] text-gray-500 font-medium tracking-wide uppercase"
-            >适配翻译 Adapted</span
-          >
-          <button
-            onclick="exportReport()"
-            class="text-[10px] text-gray-600 hover:text-gold transition hidden"
-            id="export-btn"
-          >
-            导出
-          </button>
-        </div>
-        <div
-          id="translation-empty"
-          class="flex-1 flex items-center justify-center"
-        >
-          <div class="text-center">
-            <p class="text-gray-600 text-sm">
-              点击 <span class="text-gold">"文化 X 光"</span> 开始
-            </p>
-            <p class="text-gray-700 text-xs mt-1">悬停高亮词汇查看文化卡片</p>
+      <!-- ==================== STEP 2: Cultural Processing ==================== -->
+      <section id="step2" class="step-panel right">
+        <div class="h-full flex">
+          <!-- Left: source -->
+          <div class="w-1/2 border-r border-ink-700/30 flex flex-col">
+            <div
+              class="px-5 py-2 border-b border-ink-700/20 flex justify-between"
+            >
+              <span class="text-[11px] text-gray-500 uppercase tracking-wide"
+                >原文 Source</span
+              >
+              <span id="s2-charcount" class="text-[10px] text-gray-600"></span>
+            </div>
+            <div id="s2-source" class="flex-1 overflow-y-auto p-5">
+              <div
+                id="s2-annotated"
+                class="text-sm text-gray-300 leading-loose"
+              ></div>
+            </div>
+          </div>
+          <!-- Right: translation -->
+          <div class="w-1/2 flex flex-col bg-ink-900/30">
+            <div class="px-5 py-2 border-b border-ink-700/20">
+              <span class="text-[11px] text-gray-500 uppercase tracking-wide"
+                >适配翻译 Adapted</span
+              >
+            </div>
+            <div id="s2-translation" class="flex-1 overflow-y-auto p-5">
+              <div id="s2-lines" class="space-y-0.5"></div>
+            </div>
           </div>
         </div>
-        <div id="translation-output" class="flex-1 overflow-y-auto p-5 hidden">
-          <div id="translation-lines" class="space-y-0.5"></div>
+      </section>
+
+      <!-- ==================== STEP 3: Publish ==================== -->
+      <section id="step3" class="step-panel right">
+        <div class="h-full flex flex-col">
+          <!-- Platform tabs -->
+          <div class="flex-shrink-0 border-b border-ink-700/30 px-5">
+            <div class="max-w-4xl mx-auto flex items-center gap-1 py-2">
+              <button
+                onclick="switchPlatform('tiktok')"
+                class="plat-tab px-4 py-1.5 text-xs rounded-lg transition"
+                data-plat="tiktok"
+              >
+                TikTok
+              </button>
+              <button
+                onclick="switchPlatform('instagram')"
+                class="plat-tab px-4 py-1.5 text-xs rounded-lg transition"
+                data-plat="instagram"
+              >
+                Instagram
+              </button>
+              <button
+                onclick="switchPlatform('youtube')"
+                class="plat-tab px-4 py-1.5 text-xs rounded-lg transition"
+                data-plat="youtube"
+              >
+                YouTube
+              </button>
+              <button
+                onclick="switchPlatform('twitter')"
+                class="plat-tab px-4 py-1.5 text-xs rounded-lg transition"
+                data-plat="twitter"
+              >
+                X
+              </button>
+              <button
+                onclick="switchPlatform('reddit')"
+                class="plat-tab px-4 py-1.5 text-xs rounded-lg transition"
+                data-plat="reddit"
+              >
+                Reddit
+              </button>
+              <div class="flex-1"></div>
+              <button
+                onclick="goStep(1)"
+                class="text-[10px] text-gray-600 hover:text-gold transition"
+              >
+                重新开始
+              </button>
+            </div>
+          </div>
+          <!-- Platform preview area -->
+          <div
+            class="flex-1 overflow-y-auto flex items-start justify-center p-8"
+          >
+            <div class="max-w-lg w-full">
+              <div id="plat-tiktok" class="plat-content hidden"></div>
+              <div id="plat-instagram" class="plat-content hidden"></div>
+              <div id="plat-youtube" class="plat-content hidden"></div>
+              <div id="plat-twitter" class="plat-content hidden"></div>
+              <div id="plat-reddit" class="plat-content hidden"></div>
+            </div>
+          </div>
+          <!-- Bottom stats -->
+          <div class="flex-shrink-0 border-t border-ink-700/30 px-5 py-3">
+            <div
+              class="max-w-4xl mx-auto flex items-center justify-between text-[11px] text-gray-500"
+            >
+              <span id="publish-stats">5 个平台素材已就绪</span>
+              <span class="text-gold font-medium"
+                >CultureBridge 一站式出海</span
+              >
+            </div>
+          </div>
         </div>
       </section>
     </main>
 
+    <!-- Publish Modal -->
     <div
-      id="intel-panel"
-      class="flex-shrink-0 border-t border-ink-700/30 hidden"
+      id="pub-modal"
+      class="modal-bg hidden fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px)"
     >
-      <div class="max-w-[1400px] mx-auto">
-        <div class="flex border-b border-ink-700/20">
-          <button
-            onclick="switchIntel('decisions')"
-            class="intel-tab px-4 py-2 text-[11px] text-gray-500 hover:text-gray-300 border-b-2 border-transparent transition"
-            data-tab="decisions"
+      <div
+        class="modal-content bg-ink-800 border border-ink-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center"
+      >
+        <div id="pub-step1" class="">
+          <div
+            class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4"
           >
-            翻译决策
+            <span id="pub-icon" class="text-gold text-xl">T</span>
+          </div>
+          <p class="text-white font-medium mb-2" id="pub-title">
+            连接 TikTok 账号
+          </p>
+          <p class="text-xs text-gray-500 mb-6">
+            授权 CultureBridge 发布内容到你的账号
+          </p>
+          <button
+            onclick="simulatePublish()"
+            class="w-full bg-gold text-ink-950 font-medium py-2.5 rounded-lg text-sm"
+          >
+            授权并发布
           </button>
           <button
-            onclick="switchIntel('risks')"
-            class="intel-tab px-4 py-2 text-[11px] text-gray-500 hover:text-gray-300 border-b-2 border-transparent transition"
-            data-tab="risks"
+            onclick="closeModal()"
+            class="w-full text-gray-500 text-xs mt-3 hover:text-gray-300 transition"
           >
-            文化风险
-          </button>
-          <button
-            onclick="switchIntel('notes')"
-            class="intel-tab px-4 py-2 text-[11px] text-gray-500 hover:text-gray-300 border-b-2 border-transparent transition"
-            data-tab="notes"
-          >
-            文化注释
-          </button>
-          <button
-            onclick="switchIntel('promo')"
-            class="intel-tab px-4 py-2 text-[11px] text-gray-500 hover:text-gray-300 border-b-2 border-transparent transition"
-            data-tab="promo"
-          >
-            推广素材
+            取消
           </button>
         </div>
-        <div
-          id="intel-decisions"
-          class="intel-content p-4 max-h-48 overflow-y-auto hidden"
-        ></div>
-        <div
-          id="intel-risks"
-          class="intel-content p-4 max-h-48 overflow-y-auto hidden"
-        ></div>
-        <div
-          id="intel-notes"
-          class="intel-content p-4 max-h-48 overflow-y-auto hidden"
-        ></div>
-        <div
-          id="intel-promo"
-          class="intel-content p-4 max-h-48 overflow-y-auto hidden"
-        ></div>
+        <div id="pub-step2" class="hidden">
+          <div
+            class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4 animate-spin"
+            style="animation-duration: 1.5s"
+          >
+            <span class="text-gold text-lg">&#9696;</span>
+          </div>
+          <p class="text-white text-sm">
+            正在发布到 <span id="pub-platform-name"></span>...
+          </p>
+        </div>
+        <div id="pub-step3" class="hidden">
+          <div
+            class="w-12 h-12 rounded-full bg-jade/20 flex items-center justify-center mx-auto mb-4"
+          >
+            <span class="text-jade text-xl">&#10003;</span>
+          </div>
+          <p class="text-white font-medium mb-1">发布成功</p>
+          <p class="text-xs text-gray-500 mb-4">
+            内容已发布到 <span id="pub-done-name"></span>
+          </p>
+          <button
+            onclick="closeModal()"
+            class="w-full bg-ink-700 text-gray-200 py-2 rounded-lg text-sm"
+          >
+            完成
+          </button>
+        </div>
       </div>
     </div>
 
-    <div id="culture-card" class="culture-card">
+    <!-- Culture Card (floating) -->
+    <div
+      id="culture-card"
+      class="fixed z-40 w-80 bg-ink-800 border border-gold/30 rounded-xl p-4 shadow-2xl transition-all duration-200"
+      style="
+        transform: scale(0.95) translateY(4px);
+        opacity: 0;
+        pointer-events: none;
+      "
+    >
       <div class="flex items-center justify-between mb-2">
         <span
           id="cc-concept"
@@ -422,22 +702,16 @@
       ></p>
       <div class="grid grid-cols-2 gap-2 mb-3">
         <div>
-          <p
-            class="text-[9px] text-jade font-medium mb-1 uppercase tracking-wider"
-          >
-            Good
-          </p>
+          <p class="text-[9px] text-jade font-medium mb-1 uppercase">Good</p>
           <div id="cc-good" class="text-[11px] text-gray-300 space-y-0.5"></div>
         </div>
         <div>
-          <p
-            class="text-[9px] text-cinnabar font-medium mb-1 uppercase tracking-wider"
-          >
+          <p class="text-[9px] text-cinnabar font-medium mb-1 uppercase">
             Never use
           </p>
           <div
             id="cc-bad"
-            class="text-[11px] text-gray-500 space-y-0.5 line-through"
+            class="text-[11px] text-gray-500 line-through space-y-0.5"
           ></div>
         </div>
       </div>
@@ -448,47 +722,47 @@
     </div>
 
     <script>
-      let currentJobId = null,
+      // ========== STATE ==========
+      let currentStep = 1,
+        currentJobId = null,
         jobOutput = null,
+        jobMode = null,
         elapsedInterval = null,
-        startTime = null;
+        startTime = null,
+        currentPlatform = "tiktok";
+
+      // ========== DEMOS ==========
       const DEMOS = {
         palace: `皇上，臣妾做不到啊！\n本宫乏了，退下吧。\n冤家路窄，今日就让本王会会你。\n你好大的胆子，竟敢在太岁头上动土！\n三十年河东，三十年河西，莫欺少年穷。\n知人知面不知心，后宫之中，谁是敌谁是友？\n来人，将她打入冷宫！\n娘娘请安，奴才给您请安了。\n皇上翻了淑妃的牌子，今晚侍寝。\n赐死，赐她三尺白绫。`,
-        xianxia: `师兄，我的灵根资质太差，恐怕无法筑基。\n金丹已碎，元婴即将成形，此刻不能有丝毫分心。\n道心不稳，心魔趁虚而入，若不能斩除，修为将全废。\n渡劫雷霆降临，天道不容逆天改命之人。\n灵石已经耗尽，丹田中的灵气所剩无几。\n御剑飞行千里，只为赶在飞升之前见她最后一面。\n结丹之路凶险万分，十人中仅有一人能成。\n仙人之上，还有天仙、金仙、大罗金仙之分。`,
-        game: `少侠，你的灵根资质不错，可愿拜入我青云门？\n师父，弟子愿以毕生修炼道心，绝不辜负门派期望。\n此剑名为"断水"，乃上古仙人以天外陨铁铸造，可斩一切心魔。\n前方妖气冲天，看来有高阶妖兽在此渡劫。\n道友请留步，贫道有一事相求。\n你这走火入魔之人，休要在此撒野！\n江湖险恶，你一个筑基期的小修士，如何能独闯万妖山？\n以你金丹期的修为，要对付这元婴老怪，怕是力有不逮。`,
+        xianxia: `师兄，我的灵根资质太差，恐怕无法筑基。\n金丹已碎，元婴即将成形，此刻不能有丝毫分心。\n道心不稳，心魔趁虚而入，若不能斩除，修为将全废。\n渡劫雷霆降临，天道不容逆天改命之人。\n灵石已经耗尽，丹田中的灵气所剩无几。`,
+        game: `少侠，你的灵根资质不错，可愿拜入我青云门？\n师父，弟子愿以毕生修炼道心，绝不辜负门派期望。\n道友请留步，贫道有一事相求。\n你这走火入魔之人，休要在此撒野！\n江湖险恶，你一个筑基期的小修士，如何能独闯万妖山？`,
       };
       const GOOGLE = {
         palace: [
           "Your Majesty, I can't do it!",
           "I'm tired, step back.",
-          "Enemies meet on a narrow road, today let me meet you.",
-          "You are so bold, you dare to break ground on the head of Tai Sui!",
-          "Thirty years east of the river, thirty years west, don't bully the young poor.",
-          "You can know a person's face but not their heart.",
-          "Someone, put her in the cold palace!",
-          "Greetings to the empress, this servant pays respects.",
-          "The emperor turned over Consort Shu's card, serving tonight.",
-          "Grant death, grant her three feet of white silk.",
+          "Enemies meet on a narrow road.",
+          "You dare break ground on Tai Sui's head!",
+          "30 years east, 30 years west, don't bully the young poor.",
+          "Know face not heart, who is friend who is foe?",
+          "Put her in the cold palace!",
+          "Greetings, this servant pays respects.",
+          "Emperor turned Consort Shu's card, serving tonight.",
+          "Grant death, three feet of white silk.",
         ],
         xianxia: [
-          "My spiritual root quality is too poor, can't build a foundation.",
-          "The golden pill is broken, the original baby is about to form.",
-          "The Dao heart is unstable, the heart demon takes advantage.",
-          "The tribulation thunder descends, heaven doesn't allow fate defiers.",
-          "The spirit stones are exhausted, spiritual energy almost gone.",
-          "Flying with a sword for a thousand miles before flying up.",
-          "The road to tying the pill is extremely dangerous.",
-          "Above immortals: heavenly, golden, and great Luo golden immortals.",
+          "My spiritual root quality is too poor.",
+          "The golden pill is broken, original baby forming.",
+          "Dao heart unstable, heart demon invading.",
+          "Tribulation thunder descends, heaven doesn't allow fate defiers.",
+          "Spirit stones exhausted, spiritual energy almost gone.",
         ],
         game: [
-          "Young hero, willing to join my Qingyun Gate?",
-          "Master, the disciple will cultivate the Dao heart for a lifetime.",
-          "This sword called Broken Water, forged with meteorite iron.",
-          "Demonic energy ahead, a demon beast undergoing tribulation.",
-          "Taoist friend please stay, this poor Taoist has a request.",
-          "You who went fire and entered devil, don't be wild here!",
-          "Rivers and lakes are dangerous, you a small foundation builder.",
-          "With your golden pill cultivation, against this original baby old monster...",
+          "Young hero, willing to join Qingyun Gate?",
+          "Master, disciple will cultivate Dao heart lifetime.",
+          "Taoist friend please stay, poor Taoist has request.",
+          "You who went fire entered devil, don't be wild!",
+          "Rivers lakes dangerous, you small foundation builder.",
         ],
       };
       const ALL_CONCEPTS = [
@@ -502,15 +776,12 @@
         "翻牌子",
         "打入冷宫",
         "赐死",
-        "选秀",
-        "册封",
         "太岁头上动土",
         "三十年河东三十年河西",
         "知人知面不知心",
         "娘娘",
         "请安",
         "侍寝",
-        "凤冠霞帔",
         "莫欺少年穷",
         "三尺白绫",
         "冤家路窄",
@@ -525,7 +796,6 @@
         "心魔",
         "仙人",
         "筑基",
-        "化神",
         "天道",
         "灵石",
         "御剑飞行",
@@ -542,111 +812,135 @@
         "师兄",
         "妖兽",
         "江湖",
-        "武林盟主",
+        "走火入魔",
         "内力",
         "轻功",
-        "真气",
-        "走火入魔",
-        "绝世武功",
-        "一代宗师",
-        "相亲",
-        "彩礼",
-        "面子",
-        "关系",
-        "铁饭碗",
       ];
 
-      function loadDemo(t) {
-        document.getElementById("content-input").value = DEMOS[t];
-        document.getElementById("content-type").value =
-          t === "palace" ? "drama" : t === "game" ? "game" : "novel";
-        updateCharCount();
-      }
-      function updateCharCount() {
-        document.getElementById("char-count").textContent =
-          document.getElementById("content-input").value.length + " 字";
+      // ========== STEP NAVIGATION ==========
+      function goStep(n) {
+        ["step1", "step2", "step3"].forEach((id, i) => {
+          const el = document.getElementById(id);
+          el.className =
+            "step-panel " +
+            (i + 1 < n ? "left" : i + 1 > n ? "right" : "active");
+        });
+        currentStep = n;
+        document.getElementById("si-1").className =
+          n >= 1 ? "text-gold font-medium" : "text-ink-600";
+        document.getElementById("si-2").className =
+          n >= 2 ? "text-gold font-medium" : "text-ink-600";
+        document.getElementById("si-3").className =
+          n >= 3 ? "text-gold font-medium" : "text-ink-600";
+        document
+          .getElementById("pipeline-bar")
+          .classList.toggle("hidden", n !== 2);
       }
 
-      async function startAnalysis() {
-        const content = document.getElementById("content-input").value.trim();
-        if (!content) return;
-        const btn = document.getElementById("start-btn");
-        btn.disabled = true;
-        btn.textContent = "分析中...";
-        btn.classList.add("opacity-50");
-        document.getElementById("pipeline-bar").classList.remove("hidden");
-        document.getElementById("translation-empty").classList.add("hidden");
-        document
-          .getElementById("translation-output")
-          .classList.remove("hidden");
-        document.getElementById("translation-lines").innerHTML = "";
-        document.getElementById("intel-panel").classList.add("hidden");
-        document.getElementById("source-input").classList.remove("hidden");
-        document.getElementById("source-annotated").classList.add("hidden");
-        document.getElementById("export-btn").classList.add("hidden");
+      // ========== STEP 1: MODE HANDLERS ==========
+      function setIntent(text) {
+        document.getElementById("intent-input").value = text;
+      }
+      function loadProDemo(type) {
+        document.getElementById("pro-input").value = DEMOS[type];
+        document.getElementById("pro-type").value =
+          type === "palace" ? "drama" : type === "game" ? "game" : "novel";
+      }
+
+      async function startBeginner() {
+        const intent = document.getElementById("intent-input").value.trim();
+        if (!intent) return;
+        jobMode = "beginner";
+        const platforms = [
+          ...document.querySelectorAll(".platform-check input:checked"),
+        ].map((c) => c.value);
+        document.getElementById("dot-creator").classList.remove("hidden");
+        goStep(2);
         resetDots();
         startTimer();
         try {
-          const resp = await fetch("/api/create", {
+          const r = await fetch("/api/create-from-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              content,
-              content_type: document.getElementById("content-type").value,
-              target_lang: document.getElementById("target-lang").value,
-              target_market: document.getElementById("target-market").value,
+              intent,
+              content_type: "general",
+              target_lang: "en",
+              target_market: "us",
+              platforms,
             }),
           });
-          const data = await resp.json();
-          currentJobId = data.job_id;
-          listenSSE(currentJobId);
+          const d = await r.json();
+          currentJobId = d.job_id;
+          listenSSE(d.job_id);
         } catch (e) {
-          stopTimer();
-          btn.disabled = false;
-          btn.textContent = "文化 X 光";
-          btn.classList.remove("opacity-50");
           setStatus("连接失败", "error");
         }
       }
 
+      async function startPro() {
+        const content = document.getElementById("pro-input").value.trim();
+        if (!content) return;
+        jobMode = "pro";
+        document.getElementById("dot-creator").classList.add("hidden");
+        document.getElementById("s2-annotated").textContent = content;
+        document.getElementById("s2-charcount").textContent =
+          content.length + " 字";
+        goStep(2);
+        resetDots();
+        startTimer();
+        try {
+          const r = await fetch("/api/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              content,
+              content_type: document.getElementById("pro-type").value,
+              target_lang: document.getElementById("pro-lang").value,
+              target_market: document.getElementById("pro-market").value,
+            }),
+          });
+          const d = await r.json();
+          currentJobId = d.job_id;
+          listenSSE(d.job_id);
+        } catch (e) {
+          setStatus("连接失败", "error");
+        }
+      }
+
+      // ========== SSE ==========
       function listenSSE(jobId) {
-        const source = new EventSource(`/api/stream/${jobId}`);
-        source.onmessage = (e) => {
-          const event = JSON.parse(e.data);
-          handleEvent(event);
-          if (event.stage === "done") {
-            source.close();
+        const src = new EventSource(`/api/stream/${jobId}`);
+        src.onmessage = (e) => {
+          const ev = JSON.parse(e.data);
+          handleEvent(ev);
+          if (ev.stage === "done") {
+            src.close();
             stopTimer();
-            if (event.data?.status === "completed") {
-              fetchResults(jobId);
-            } else {
-              setStatus(event.message || "失败", "error");
-              const btn = document.getElementById("start-btn");
-              btn.disabled = false;
-              btn.textContent = "文化 X 光";
-              btn.classList.remove("opacity-50");
-            }
+            if (ev.data?.status === "completed") fetchResults(jobId);
+            else setStatus(ev.message || "失败", "error");
           }
         };
-        source.onerror = () => {
-          source.close();
+        src.onerror = () => {
+          src.close();
           stopTimer();
         };
       }
 
       async function fetchResults(jobId) {
-        const resp = await fetch(`/api/status/${jobId}`);
-        const data = await resp.json();
-        jobOutput = data.output;
-        renderResults();
-        const btn = document.getElementById("start-btn");
-        btn.disabled = false;
-        btn.textContent = "文化 X 光";
-        btn.classList.remove("opacity-50");
-        document.getElementById("export-btn").classList.remove("hidden");
+        const r = await fetch(`/api/status/${jobId}`);
+        const d = await r.json();
+        jobOutput = d.output;
+        renderStep2Results();
+        setTimeout(() => {
+          renderStep3();
+          goStep(3);
+        }, 1500);
       }
 
+      // ========== AGENT DOTS ==========
       const DOT_MAP = {
+        content_creator: "dot-creator",
         scanner: "dot-scanner",
         matcher: "dot-matcher",
         translator: "dot-translator",
@@ -655,42 +949,45 @@
       };
       function resetDots() {
         Object.values(DOT_MAP).forEach((id) => {
-          document.getElementById(id).className = "agent-dot pending";
+          const el = document.getElementById(id);
+          if (el) {
+            const d = el.querySelector?.(".agent-dot") || el;
+            d.className = "agent-dot pending";
+          }
         });
       }
-      function handleEvent(event) {
-        const dotId = DOT_MAP[event.stage];
+      function handleEvent(ev) {
+        const dotId = DOT_MAP[ev.stage];
         if (!dotId) return;
-        const dot = document.getElementById(dotId);
-        if (event.data?.level === "error") {
+        const el = document.getElementById(dotId);
+        const dot = el.querySelector?.(".agent-dot") || el;
+        if (ev.data?.level === "error") {
           dot.className = "agent-dot error";
           return;
         }
-        if (event.data?.degraded) {
+        if (ev.data?.degraded) {
           dot.className = "agent-dot error";
-          setStatus(event.message, "warn");
           return;
         }
         if (
-          event.message.includes("完成") ||
-          event.message.includes("发现") ||
-          event.message.includes("命中")
+          ev.message.includes("完成") ||
+          ev.message.includes("发现") ||
+          ev.message.includes("命中") ||
+          ev.message.includes("生成")
         ) {
           dot.className = "agent-dot done";
         } else {
           dot.className = "agent-dot active";
         }
-        setStatus(event.message);
+        setStatus(ev.message);
       }
-      function setStatus(msg, level) {
+      function setStatus(msg, lv) {
         const el = document.getElementById("status-text");
         el.textContent = msg;
         el.className =
-          level === "error"
+          lv === "error"
             ? "text-cinnabar text-[10px] truncate max-w-xs"
-            : level === "warn"
-              ? "text-yellow-500 text-[10px] truncate max-w-xs"
-              : "text-gray-500 text-[10px] truncate max-w-xs";
+            : "text-gray-500 text-[10px] truncate max-w-xs";
       }
       function startTimer() {
         startTime = Date.now();
@@ -707,177 +1004,186 @@
         }
       }
 
-      function renderResults() {
-        renderAnnotatedSource();
-        renderTranslation();
-        renderIntelPanel();
-      }
-
-      function renderAnnotatedSource() {
-        const content = document.getElementById("content-input").value;
-        let html = "";
-        const lines = content.split("\n");
+      // ========== STEP 2 RENDERING ==========
+      function renderStep2Results() {
+        const translations = jobOutput?.translation || [];
+        // Annotate source
+        const content =
+          jobMode === "pro"
+            ? document.getElementById("pro-input").value
+            : translations.map((t) => t.original || "").join("\n");
         const sorted = [...ALL_CONCEPTS].sort((a, b) => b.length - a.length);
-        lines.forEach((line) => {
-          // Find all concept positions in the raw line, then build HTML segments
+        let html = "";
+        content.split("\n").forEach((line) => {
           const marks = [];
           const used = new Array(line.length).fill(false);
-          for (const concept of sorted) {
-            let idx = line.indexOf(concept);
+          for (const c of sorted) {
+            let idx = line.indexOf(c);
             while (idx !== -1) {
-              let overlap = false;
-              for (let k = idx; k < idx + concept.length; k++) {
-                if (used[k]) {
-                  overlap = true;
-                  break;
-                }
+              let ov = false;
+              for (let k = idx; k < idx + c.length; k++) if (used[k]) ov = true;
+              if (!ov) {
+                marks.push({ start: idx, end: idx + c.length, concept: c });
+                for (let k = idx; k < idx + c.length; k++) used[k] = true;
               }
-              if (!overlap) {
-                marks.push({ start: idx, end: idx + concept.length, concept });
-                for (let k = idx; k < idx + concept.length; k++) used[k] = true;
-              }
-              idx = line.indexOf(concept, idx + 1);
+              idx = line.indexOf(c, idx + 1);
             }
           }
           marks.sort((a, b) => a.start - b.start);
-          let result = "";
-          let pos = 0;
+          let r = "",
+            p = 0;
           for (const m of marks) {
-            if (m.start > pos) result += escHtml(line.slice(pos, m.start));
-            result += `<span class="culture-mark scan-glow" data-concept="${escAttr(m.concept)}" onmouseenter="showCard(this,event)" onmouseleave="hideCard()">${escHtml(m.concept)}</span>`;
-            pos = m.end;
+            if (m.start > p) r += esc(line.slice(p, m.start));
+            r += `<span class="culture-mark scan-glow" data-concept="${escA(m.concept)}" onmouseenter="showCard(this,event)" onmouseleave="hideCard()">${esc(m.concept)}</span>`;
+            p = m.end;
           }
-          if (pos < line.length) result += escHtml(line.slice(pos));
-          html += `<p class="mb-1.5">${result}</p>`;
+          if (p < line.length) r += esc(line.slice(p));
+          html += `<p class="mb-1.5">${r}</p>`;
         });
-        document.getElementById("annotated-text").innerHTML = html;
-        document.getElementById("source-input").classList.add("hidden");
-        document.getElementById("source-annotated").classList.remove("hidden");
-      }
+        document.getElementById("s2-annotated").innerHTML = html;
+        document.getElementById("s2-charcount").textContent =
+          content.length + " 字";
 
-      function renderTranslation() {
-        const container = document.getElementById("translation-lines");
-        container.innerHTML = "";
-        const translations = jobOutput?.translation || [];
+        // Translation lines
         const ct =
-          document.getElementById("content-type").value === "drama"
+          document.getElementById("pro-type")?.value === "drama"
             ? "palace"
-            : document.getElementById("content-type").value === "game"
+            : document.getElementById("pro-type")?.value === "game"
               ? "game"
               : "xianxia";
         const google = GOOGLE[ct] || [];
+        const container = document.getElementById("s2-lines");
+        container.innerHTML = "";
         translations.forEach((t, i) => {
           const div = document.createElement("div");
-          div.className = "trans-line group";
+          div.className = "trans-line";
           div.style.animationDelay = i * 0.08 + "s";
-          const g = google[i] || "";
-          div.innerHTML = `<div class="flex gap-3 py-2 px-1 rounded hover:bg-ink-800/30 transition border-b border-ink-700/10">
-      <div class="flex-1">
-        <p class="text-sm text-gray-200 font-latin leading-relaxed">${escHtml(t.translation || "")}</p>
-        ${g ? `<p class="text-[10px] text-gray-600 mt-0.5 line-through italic">${escHtml(g)}</p>` : ""}
-      </div>
-      <div class="flex items-start gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition">
-        ${t.cultural_note ? '<span class="px-1.5 py-0.5 text-[9px] rounded bg-gold/10 text-gold/60">KB</span>' : ""}
-        ${t.confidence === "low" ? '<span class="px-1.5 py-0.5 text-[9px] rounded bg-cinnabar/10 text-cinnabar">审核</span>' : ""}
-      </div>
-    </div>`;
+          div.innerHTML = `<div class="py-2 px-1 border-b border-ink-700/10"><p class="text-sm text-gray-200 font-latin leading-relaxed">${esc(t.translation || "")}</p>${google[i] ? `<p class="text-[10px] text-gray-600 mt-0.5 line-through italic">${esc(google[i])}</p>` : ""}</div>`;
           container.appendChild(div);
         });
       }
 
-      function renderIntelPanel() {
-        document.getElementById("intel-panel").classList.remove("hidden");
-        renderDecisions();
-        renderRisks();
-        renderNotes();
-        renderPromo();
-        switchIntel("decisions");
-      }
+      // ========== STEP 3 RENDERING ==========
+      function renderStep3() {
+        const pc = jobOutput?.platform_content || {};
+        // TikTok
+        const tk = pc.tiktok || {};
+        document.getElementById("plat-tiktok").innerHTML = `
+    <div class="pub-card bg-black rounded-3xl p-5 border border-gray-800 max-w-xs mx-auto" style="aspect-ratio:9/14;display:flex;flex-direction:column;justify-content:flex-end">
+      <div class="mt-auto">
+        <p class="text-white text-sm mb-2 leading-relaxed">${esc(tk.caption || "TikTok content generating...")}</p>
+        <p class="text-[11px] text-blue-400">${(tk.hashtags || []).map((h) => "#" + h.replace("#", "")).join(" ")}</p>
+        <p class="text-[10px] text-gray-500 mt-2">Cover: ${esc(tk.cover_text_suggestion || "")}</p>
+      </div>
+    </div>
+    <button onclick="openPublish('TikTok')" class="w-full max-w-xs mx-auto block mt-4 bg-gradient-to-r from-pink-500 to-cyan-400 text-white font-medium py-2.5 rounded-lg text-sm">发布到 TikTok</button>`;
 
-      function renderDecisions() {
-        const c = document.getElementById("intel-decisions");
-        const r = jobOutput?.decision_report;
-        if (!r || r._parse_failed) {
-          c.innerHTML = '<p class="text-gray-600 text-xs">数据不可用</p>';
-          return;
-        }
-        c.innerHTML = (r.decisions || [])
-          .map(
-            (d) =>
-              `<div class="flex gap-3 py-2 border-b border-ink-700/20"><span class="text-gold text-sm font-display flex-shrink-0 w-20">${escHtml(d.concept || "")}</span><div class="flex-1 text-xs"><span class="text-jade">${escHtml(d.chosen_translation || "")}</span>${(d.alternatives_rejected || []).length ? `<span class="text-gray-600 ml-2 line-through">${d.alternatives_rejected.join(", ")}</span>` : ""}<p class="text-gray-500 mt-0.5">${escHtml(d.rationale || "")}</p></div></div>`,
-          )
-          .join("");
-      }
+        // Instagram
+        const ig = pc.instagram || {};
+        document.getElementById("plat-instagram").innerHTML = `
+    <div class="pub-card bg-white rounded-xl overflow-hidden max-w-sm mx-auto border">
+      <div class="px-3 py-2 flex items-center gap-2 border-b"><div class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-orange-400"></div><span class="text-xs font-medium text-gray-800">culturebridge</span></div>
+      <div class="bg-gradient-to-br from-amber-100 to-orange-50 aspect-square flex items-center justify-center"><span class="text-4xl">&#127983;</span></div>
+      <div class="p-3"><p class="text-xs text-gray-800 leading-relaxed whitespace-pre-line">${esc((ig.caption || "").substring(0, 300))}</p><p class="text-[10px] text-blue-600 mt-1">${(
+        ig.hashtags || []
+      )
+        .slice(0, 10)
+        .map((h) => "#" + h.replace("#", ""))
+        .join(" ")}</p></div>
+    </div>
+    <button onclick="openPublish('Instagram')" class="w-full max-w-sm mx-auto block mt-4 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white font-medium py-2.5 rounded-lg text-sm">发布到 Instagram</button>`;
 
-      function renderRisks() {
-        const c = document.getElementById("intel-risks");
-        const r = jobOutput?.risk_report;
-        if (!r || r._parse_failed) {
-          c.innerHTML = '<p class="text-gray-600 text-xs">数据不可用</p>';
-          return;
-        }
-        const lv = r.overall_risk_level || "low";
-        const rc =
-          { high: "risk-high", medium: "risk-medium", low: "risk-low" }[lv] ||
-          "risk-low";
-        c.innerHTML =
-          `<div class="flex items-center gap-2 mb-3"><span class="px-2 py-0.5 text-[10px] rounded ${rc}">${lv.toUpperCase()}</span><span class="text-xs text-gray-400">${escHtml(r.summary || "")}</span></div>` +
-          (r.risks || [])
-            .map((x) => {
-              const xc =
-                { high: "risk-high", medium: "risk-medium", low: "risk-low" }[
-                  x.risk_level
-                ] || "risk-low";
-              return `<div class="flex items-start gap-2 py-1.5"><span class="px-1.5 py-0.5 text-[9px] rounded ${xc}">${x.risk_level || "?"}</span><div class="text-xs text-gray-400">${escHtml(x.concept || x.risk_reason || "")} <span class="text-gray-600">${escHtml(x.suggestion || "")}</span></div></div>`;
-            })
-            .join("");
-      }
+        // YouTube
+        const yt = pc.youtube || {};
+        document.getElementById("plat-youtube").innerHTML = `
+    <div class="pub-card bg-white rounded-xl overflow-hidden max-w-lg mx-auto border">
+      <div class="bg-gray-900 aspect-video flex items-center justify-center"><span class="text-red-500 text-4xl">&#9654;</span></div>
+      <div class="p-4"><h3 class="text-sm font-medium text-gray-900 mb-1">${esc(yt.title || "")}</h3><p class="text-[11px] text-gray-600 line-clamp-3">${esc((yt.description || "").substring(0, 200))}</p><div class="flex flex-wrap gap-1 mt-2">${(
+        yt.tags || []
+      )
+        .slice(0, 8)
+        .map(
+          (t) =>
+            `<span class="text-[9px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded">${esc(t)}</span>`,
+        )
+        .join("")}</div></div>
+    </div>
+    <button onclick="openPublish('YouTube')" class="w-full max-w-lg mx-auto block mt-4 bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg text-sm">发布到 YouTube</button>`;
 
-      function renderNotes() {
-        const c = document.getElementById("intel-notes");
-        const n = jobOutput?.cultural_notes || [];
-        if (!n.length) {
-          c.innerHTML = '<p class="text-gray-600 text-xs">暂无</p>';
-          return;
-        }
-        c.innerHTML = n
-          .map(
-            (x) =>
-              `<div class="py-2 border-b border-ink-700/20"><p class="text-xs text-gray-400">${escHtml(x.original || "")}</p><p class="text-[11px] text-gold/70 mt-1 font-latin italic">${escHtml(x.note || "")}</p></div>`,
-          )
-          .join("");
-      }
-
-      function renderPromo() {
-        const c = document.getElementById("intel-promo");
-        const p = jobOutput?.promo_materials;
-        if (!p || p._parse_failed) {
-          c.innerHTML = '<p class="text-gray-600 text-xs">数据不可用</p>';
-          return;
-        }
-        c.innerHTML =
-          (p.synopsis
-            ? `<p class="text-xs text-gray-300 mb-3">${escHtml(p.synopsis)}</p>`
-            : "") +
-          (p.social_posts || [])
+        // Twitter/X
+        const tw = pc.twitter || {};
+        const tweets = tw.tweets || [];
+        document.getElementById("plat-twitter").innerHTML =
+          tweets
             .map(
-              (x) =>
-                `<div class="py-1.5 border-b border-ink-700/20"><span class="text-[9px] text-gold/50">${escHtml(x.platform || "")}</span><p class="text-xs text-gray-400 mt-0.5">${escHtml(x.text || "")}</p></div>`,
+              (t, i) => `
+    <div class="pub-card bg-black rounded-xl border border-gray-800 p-4 mb-3">
+      <div class="flex items-start gap-3"><div class="w-9 h-9 rounded-full bg-gold/20 flex-shrink-0 flex items-center justify-center"><span class="text-gold text-xs font-display">CB</span></div>
+      <div><p class="text-xs font-medium text-white mb-0.5">CultureBridge</p><p class="text-sm text-gray-300 leading-relaxed">${esc(t)}</p></div></div>
+    </div>`,
             )
-            .join("");
+            .join("") +
+          `<button onclick="openPublish('X')" class="w-full block mt-2 bg-black border border-gray-700 text-white font-medium py-2.5 rounded-lg text-sm hover:bg-gray-900 transition">发布到 X</button>`;
+
+        // Reddit
+        const rd = pc.reddit || {};
+        document.getElementById("plat-reddit").innerHTML = `
+    <div class="pub-card bg-white rounded-xl border p-4 max-w-lg mx-auto">
+      <div class="flex items-center gap-2 mb-2">${(rd.subreddit_suggestions || ["r/CDrama"]).map((s) => `<span class="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full">${esc(s)}</span>`).join("")}</div>
+      <h3 class="text-sm font-medium text-gray-900 mb-2">${esc(rd.title || "")}</h3>
+      <p class="text-xs text-gray-600 leading-relaxed line-clamp-6 whitespace-pre-line">${esc((rd.body || "").substring(0, 400))}</p>
+    </div>
+    <button onclick="openPublish('Reddit')" class="w-full max-w-lg mx-auto block mt-4 bg-orange-600 hover:bg-orange-700 text-white font-medium py-2.5 rounded-lg text-sm">发布到 Reddit</button>`;
+
+        switchPlatform("tiktok");
       }
 
-      function switchIntel(name) {
+      function switchPlatform(name) {
+        currentPlatform = name;
         document
-          .querySelectorAll(".intel-content")
+          .querySelectorAll(".plat-content")
           .forEach((el) => el.classList.add("hidden"));
-        document.getElementById("intel-" + name).classList.remove("hidden");
-        document.querySelectorAll(".intel-tab").forEach((btn) => {
-          btn.classList.toggle("border-gold", btn.dataset.tab === name);
-          btn.classList.toggle("text-gold", btn.dataset.tab === name);
+        document.getElementById("plat-" + name).classList.remove("hidden");
+        document.querySelectorAll(".plat-tab").forEach((btn) => {
+          btn.classList.toggle("bg-gold/20", btn.dataset.plat === name);
+          btn.classList.toggle("text-gold", btn.dataset.plat === name);
+          btn.classList.toggle("text-gray-500", btn.dataset.plat !== name);
         });
       }
 
+      // ========== PUBLISH MODAL ==========
+      function openPublish(name) {
+        const icons = {
+          TikTok: "T",
+          Instagram: "I",
+          YouTube: "Y",
+          X: "X",
+          Reddit: "R",
+        };
+        document.getElementById("pub-icon").textContent =
+          icons[name] || name[0];
+        document.getElementById("pub-title").textContent =
+          "连接 " + name + " 账号";
+        document.getElementById("pub-platform-name").textContent = name;
+        document.getElementById("pub-done-name").textContent = name;
+        document.getElementById("pub-step1").classList.remove("hidden");
+        document.getElementById("pub-step2").classList.add("hidden");
+        document.getElementById("pub-step3").classList.add("hidden");
+        document.getElementById("pub-modal").classList.remove("hidden");
+      }
+      function simulatePublish() {
+        document.getElementById("pub-step1").classList.add("hidden");
+        document.getElementById("pub-step2").classList.remove("hidden");
+        setTimeout(() => {
+          document.getElementById("pub-step2").classList.add("hidden");
+          document.getElementById("pub-step3").classList.remove("hidden");
+        }, 2000);
+      }
+      function closeModal() {
+        document.getElementById("pub-modal").classList.add("hidden");
+      }
+
+      // ========== CULTURE CARD ==========
       function showCard(el, ev) {
         const concept = el.dataset.concept;
         const card = document.getElementById("culture-card");
@@ -900,52 +1206,40 @@
             document.getElementById("cc-context").textContent =
               d.significance || "";
             document.getElementById("cc-good").innerHTML =
-              `<p>${escHtml(d.chosen_translation || "")}</p>`;
+              `<p>${esc(d.chosen_translation || "")}</p>`;
             document.getElementById("cc-bad").innerHTML = (
               d.alternatives_rejected || []
             )
-              .map((r) => `<p>${escHtml(r)}</p>`)
+              .map((r) => `<p>${esc(r)}</p>`)
               .join("");
             document.getElementById("cc-genre").textContent = d.kb_source || "";
             break;
           }
         }
-        document.getElementById("cc-note").textContent =
-          noteText || "文化注释将在分析完成后显示";
+        document.getElementById("cc-note").textContent = noteText || "";
         const rect = el.getBoundingClientRect();
-        card.style.left = Math.min(rect.left, window.innerWidth - 360) + "px";
+        card.style.left = Math.min(rect.left, window.innerWidth - 340) + "px";
         card.style.top =
           Math.min(rect.bottom + 8, window.innerHeight - 280) + "px";
-        card.classList.add("visible");
+        card.style.transform = "scale(1) translateY(0)";
+        card.style.opacity = "1";
+        card.style.pointerEvents = "auto";
       }
       function hideCard() {
-        document.getElementById("culture-card").classList.remove("visible");
+        const c = document.getElementById("culture-card");
+        c.style.transform = "scale(.95) translateY(4px)";
+        c.style.opacity = "0";
+        c.style.pointerEvents = "none";
       }
 
-      function exportReport() {
-        if (!jobOutput) return;
-        let md = "# CultureBridge Report\n\n## Translation\n\n";
-        (jobOutput.translation || []).forEach((t) => {
-          md += `**${t.original || ""}**\n${t.translation || ""}\n\n`;
-        });
-        md += "## Cultural Notes\n\n";
-        (jobOutput.cultural_notes || []).forEach((n) => {
-          md += `- **${n.original || ""}**: ${n.note || ""}\n`;
-        });
-        const blob = new Blob([md], { type: "text/markdown" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "culturebridge_report.md";
-        a.click();
-      }
-
-      function escHtml(s) {
+      // ========== UTILS ==========
+      function esc(s) {
         const d = document.createElement("div");
         d.textContent = s;
         return d.innerHTML;
       }
-      function escAttr(s) {
-        return (s || "").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+      function escA(s) {
+        return (s || "").replace(/"/g, "&quot;");
       }
     </script>
   </body>
