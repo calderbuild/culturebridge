@@ -72,7 +72,7 @@ def run_pipeline(
             "content_creator",
             f"内容生成完成：{creator_result.get('topic', '')}",
             0.05,
-            {"topic": creator_result.get("topic", "")},
+            {"topic": creator_result.get("topic", ""), "content": content},
         )
 
     context = {

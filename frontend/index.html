@@ -149,6 +149,47 @@
       .agent-dot.error {
         background: #c44e4e;
       }
+      /* Processing state animations */
+      .processing-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        gap: 16px;
+        opacity: 0.7;
+      }
+      .processing-spinner {
+        width: 32px;
+        height: 32px;
+        border: 2px solid rgba(201, 169, 110, 0.15);
+        border-top-color: rgba(201, 169, 110, 0.6);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .processing-log {
+        max-width: 320px;
+        width: 100%;
+      }
+      .processing-log-entry {
+        animation: logIn 0.3s ease forwards;
+        opacity: 0;
+      }
+      @keyframes logIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
       @keyframes dotPulse {
         0%,
         100% {
@@ -510,6 +551,10 @@
               <span id="s2-charcount" class="text-xs text-gray-500"></span>
             </div>
             <div id="s2-source" class="flex-1 overflow-y-auto p-5">
+              <div id="s2-source-loading" class="processing-placeholder">
+                <div class="processing-spinner"></div>
+                <p class="text-xs text-gray-500">AI 正在生成内容...</p>
+              </div>
               <div
                 id="s2-annotated"
                 class="text-sm text-gray-300 leading-loose"
@@ -524,6 +569,13 @@
               >
             </div>
             <div id="s2-translation" class="flex-1 overflow-y-auto p-5">
+              <div id="s2-right-loading" class="processing-placeholder">
+                <div class="processing-spinner"></div>
+                <p id="s2-right-status" class="text-xs text-gray-500">
+                  等待文化扫描完成...
+                </p>
+                <div id="s2-log" class="processing-log space-y-1.5 mt-2"></div>
+              </div>
               <div id="s2-lines" class="space-y-0.5"></div>
             </div>
           </div>
@@ -840,6 +892,35 @@
           type === "palace" ? "drama" : type === "game" ? "game" : "novel";
       }
 
+      function showStep2Loading(mode) {
+        const srcLoading = document.getElementById("s2-source-loading");
+        const rightLoading = document.getElementById("s2-right-loading");
+        const annotated = document.getElementById("s2-annotated");
+        const lines = document.getElementById("s2-lines");
+        const log = document.getElementById("s2-log");
+        annotated.innerHTML = "";
+        lines.innerHTML = "";
+        log.innerHTML = "";
+        document.getElementById("s2-charcount").textContent = "";
+        if (mode === "beginner") {
+          srcLoading.style.display = "flex";
+          srcLoading.querySelector("p").textContent = "AI 正在生成内容...";
+        } else {
+          srcLoading.style.display = "none";
+        }
+        rightLoading.style.display = "flex";
+        document.getElementById("s2-right-status").textContent =
+          "等待文化扫描完成...";
+      }
+      function addLogEntry(msg) {
+        const log = document.getElementById("s2-log");
+        const entry = document.createElement("div");
+        entry.className = "processing-log-entry flex items-center gap-2";
+        entry.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-jade flex-shrink-0"></span><span class="text-xs text-gray-400">${esc(msg)}</span>`;
+        log.appendChild(entry);
+        if (log.children.length > 6) log.firstChild.remove();
+      }
+
       async function startBeginner() {
         const intent = document.getElementById("intent-input").value.trim();
         if (!intent) return;
@@ -849,6 +930,7 @@
         ].map((c) => c.value);
         document.getElementById("dot-creator").classList.remove("hidden");
         goStep(2);
+        showStep2Loading("beginner");
         resetDots();
         startTimer();
         try {
@@ -876,10 +958,11 @@
         if (!content) return;
         jobMode = "pro";
         document.getElementById("dot-creator").classList.add("hidden");
+        goStep(2);
+        showStep2Loading("pro");
         document.getElementById("s2-annotated").textContent = content;
         document.getElementById("s2-charcount").textContent =
           content.length + " 字";
-        goStep(2);
         resetDots();
         startTimer();
         try {
@@ -949,6 +1032,14 @@
           }
         });
       }
+      const STAGE_STATUS = {
+        content_creator: "AI 正在创作内容...",
+        scanner: "正在扫描文化元素...",
+        matcher: "正在匹配知识库...",
+        translator: "正在文化适配翻译...",
+        reviewer: "正在审校翻译质量...",
+        finalizer: "正在生成终稿和推广素材...",
+      };
       function handleEvent(ev) {
         const dotId = DOT_MAP[ev.stage];
         if (!dotId) return;
@@ -962,17 +1053,34 @@
           dot.className = "agent-dot error";
           return;
         }
-        if (
+        const isDone =
           ev.message.includes("完成") ||
           ev.message.includes("发现") ||
           ev.message.includes("命中") ||
-          ev.message.includes("生成")
-        ) {
+          ev.message.includes("生成");
+        if (isDone) {
           dot.className = "agent-dot done";
         } else {
           dot.className = "agent-dot active";
         }
         setStatus(ev.message);
+        // Update right panel status text
+        const rightStatus = document.getElementById("s2-right-status");
+        if (rightStatus)
+          rightStatus.textContent = STAGE_STATUS[ev.stage] || ev.message;
+        // Add log entry for completed stages
+        if (isDone) addLogEntry(ev.message);
+        // Beginner mode: show generated content when Agent 0 finishes
+        if (ev.stage === "content_creator" && isDone && ev.data?.content) {
+          document.getElementById("s2-source-loading").style.display = "none";
+          document.getElementById("s2-annotated").textContent = ev.data.content;
+          document.getElementById("s2-charcount").textContent =
+            ev.data.content.length + " 字";
+        }
+        // When scanner finishes in beginner mode, hide source loading if still visible
+        if (ev.stage === "scanner" && isDone) {
+          document.getElementById("s2-source-loading").style.display = "none";
+        }
       }
       function setStatus(msg, lv) {
         const el = document.getElementById("status-text");
@@ -999,6 +1107,9 @@
 
       // ========== STEP 2 RENDERING ==========
       function renderStep2Results() {
+        // Hide loading placeholders
+        document.getElementById("s2-source-loading").style.display = "none";
+        document.getElementById("s2-right-loading").style.display = "none";
         const translations = jobOutput?.translation || [];
         // Annotate source
         const content =
