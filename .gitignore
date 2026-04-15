@@ -5,6 +5,7 @@
 *.jpeg
 __pycache__/
 .env
+client_secret_*.json
 .DS_Store
 node_modules/
 backend/output/
