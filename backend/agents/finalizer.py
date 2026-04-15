@@ -68,6 +68,46 @@ Output JSON:
   "target_audience": "description of ideal overseas audience"
 }}"""
 
+PLATFORM_CONTENT_SYSTEM = """You are an overseas social media content strategist specializing in Chinese cultural content going global.
+
+Based on the translated content and cultural context provided, generate platform-specific promotional content for 5 overseas platforms.
+
+STRICT FORMAT CONSTRAINTS — violating character limits is unacceptable:
+
+1. TikTok:
+   - caption: max 150 characters, punchy and curiosity-driving
+   - hashtags: 5-10 relevant hashtags as an array
+   - cover_text_suggestion: short text overlay for the video cover
+
+2. Instagram:
+   - caption: max 2200 characters, storytelling style with line breaks
+   - hashtags: up to 30 hashtags as an array
+   - carousel_texts: array of exactly 3 slide captions for a carousel post
+
+3. YouTube:
+   - title: max 100 characters, SEO-friendly
+   - description: max 5000 characters, with timestamps section placeholder
+   - tags: exactly 15 tags as an array
+   - chapter_suggestions: array of chapter title suggestions
+
+4. Twitter/X:
+   - tweets: array of exactly 3 standalone tweets, each max 280 characters
+   - thread_version: array of connected thread tweets (5-8 tweets, each max 280 chars)
+
+5. Reddit:
+   - title: concise, discussion-provoking
+   - body: detailed post body in markdown format
+   - subreddit_suggestions: array of relevant subreddits (e.g. r/CDrama, r/noveltranslations, r/Manhua)
+
+Output JSON with this exact structure:
+{{
+  "tiktok": {{"caption": "...", "hashtags": [...], "cover_text_suggestion": "..."}},
+  "instagram": {{"caption": "...", "hashtags": [...], "carousel_texts": [...]}},
+  "youtube": {{"title": "...", "description": "...", "tags": [...], "chapter_suggestions": [...]}},
+  "twitter": {{"tweets": [...], "thread_version": [...]}},
+  "reddit": {{"title": "...", "body": "...", "subreddit_suggestions": [...]}}
+}}"""
+
 
 def run(
     context: dict, translation_result: dict, review_result: dict, match_result: dict
@@ -89,11 +129,15 @@ def run(
     # Step 5d: Adaptation suggestions
     adaptation = _generate_adaptation_suggestions(context, translation_result)
 
+    # Step 5e: Platform-specific content for 5 overseas platforms
+    platform_content = _generate_platform_content(context, translation_result)
+
     logger.info(
-        "Finalized: %d lines, %d decisions, %d promo items",
+        "Finalized: %d lines, %d decisions, %d promo items, %d platforms",
         len(final_translation),
         len(decision_report.get("decisions", [])),
         len(promo.get("social_posts", [])),
+        len(platform_content) if isinstance(platform_content, dict) else 0,
     )
 
     return {
@@ -101,6 +145,7 @@ def run(
         "decision_report": decision_report,
         "promo_materials": promo,
         "adaptation_suggestions": adaptation,
+        "platform_content": platform_content,
     }
 
 
@@ -248,3 +293,46 @@ def _generate_adaptation_suggestions(context: dict, translation_result: dict) ->
         temperature=0.4,
     )
     return parse_json_response(response)
+
+
+def _generate_platform_content(context: dict, translation_result: dict) -> dict:
+    """Generate platform-specific promotional content for 5 overseas platforms."""
+    lang_names = {"en": "English", "ja": "Japanese", "ko": "Korean"}
+    target_lang = lang_names.get(context["target_lang"], context["target_lang"])
+
+    sample = translation_result.get("translations", [])[:10]
+    sample_text = "\n".join(
+        f"{t.get('original', '')} -> {t.get('translation', '')}" for t in sample
+    )
+
+    notes = translation_result.get("cultural_notes", [])
+    notes_text = ""
+    if notes:
+        notes_text = "\nCultural notes:\n" + json.dumps(
+            notes, ensure_ascii=False, indent=2
+        )
+
+    messages = [
+        {
+            "role": "user",
+            "content": (
+                f"Content type: {context['content_type']}\n"
+                f"Target market: {context['target_market']}\n"
+                f"Target language: {target_lang}\n\n"
+                f"Sample translated content:\n{sample_text}"
+                f"{notes_text}\n\n"
+                "Generate platform-specific promotional content for all 5 platforms "
+                "(TikTok, Instagram, YouTube, Twitter/X, Reddit) in a single JSON response. "
+                "Respect all character limits strictly."
+            ),
+        }
+    ]
+
+    response = call_claude(
+        messages, system=PLATFORM_CONTENT_SYSTEM, max_tokens=6000, temperature=0.5
+    )
+    result = parse_json_response(response)
+    if isinstance(result, dict) and result.get("_parse_failed"):
+        logger.warning("Platform content JSON parse failed")
+        return {"_parse_failed": True}
+    return result

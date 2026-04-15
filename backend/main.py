@@ -114,8 +114,58 @@ async def create_task_srt(
     return {"job_id": job_id}
 
 
+class CreateFromIntentRequest(BaseModel):
+    intent: str = Field(..., min_length=1, max_length=5000)
+    content_type: str = Field(default="drama", pattern="^(drama|novel|game|general)$")
+    target_lang: str = Field(default="en", pattern="^(en|ja|ko)$")
+    target_market: str = Field(default="us", pattern="^(us|sea|jp|kr|eu|mena)$")
+    platforms: list[str] = Field(default_factory=list)
+
+
+@app.post("/api/create-from-intent")
+async def create_from_intent(req: CreateFromIntentRequest):
+    job_id = str(uuid.uuid4())[:8]
+    logger.info(
+        "Job %s: created from intent (type=%s, lang=%s, market=%s, platforms=%s)",
+        job_id,
+        req.content_type,
+        req.target_lang,
+        req.target_market,
+        req.platforms,
+    )
+    jobs[job_id] = {
+        "status": "pending",
+        "progress": 0.0,
+        "events": [],
+        "output": None,
+        "error": None,
+        "created_at": time.time(),
+        "input_format": "intent",
+    }
+    asyncio.get_event_loop().run_in_executor(
+        None,
+        _run_job,
+        job_id,
+        "",  # no content — Agent 0 will generate it
+        req.content_type,
+        req.target_lang,
+        req.target_market,
+        True,  # create_content
+        req.intent,
+        req.platforms,
+    )
+    return {"job_id": job_id}
+
+
 def _run_job(
-    job_id: str, content: str, content_type: str, target_lang: str, target_market: str
+    job_id: str,
+    content: str,
+    content_type: str,
+    target_lang: str,
+    target_market: str,
+    create_content: bool = False,
+    intent: str = "",
+    target_platforms: list = None,
 ):
     jobs[job_id]["status"] = "running"
     start_time = time.time()
@@ -140,6 +190,9 @@ def _run_job(
             target_market=target_market,
             on_event=on_event,
             job_id=job_id,
+            create_content=create_content,
+            intent=intent,
+            target_platforms=target_platforms,
         )
         jobs[job_id]["status"] = "completed"
         jobs[job_id]["progress"] = 1.0

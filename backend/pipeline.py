@@ -27,6 +27,9 @@ def run_pipeline(
     target_market: str = "us",
     on_event: Callable[[PipelineEvent], None] = None,
     job_id: str = None,
+    create_content: bool = False,
+    intent: str = "",
+    target_platforms: list = None,
 ) -> dict:
     from backend.agents import (
         cultural_scanner,
@@ -41,6 +44,37 @@ def run_pipeline(
             on_event(PipelineEvent(stage, message, progress, data or {}))
 
     result = {"stages": {}, "job_id": job_id, "degraded": []}
+
+    # ---- Agent 0: Content Creator (optional, for beginner mode) ----
+    if create_content:
+        from backend.agents import content_creator
+
+        emit("content_creator", "正在根据意图生成文化内容...", 0.02)
+        t0 = time.time()
+        try:
+            creator_context = {
+                "intent": intent,
+                "content_type": content_type,
+                "target_platforms": target_platforms or [],
+                "target_lang": target_lang,
+                "target_market": target_market,
+            }
+            creator_result = content_creator.run(creator_context)
+        except Exception as e:
+            logger.error("Content creator failed: %s", e, exc_info=True)
+            emit("content_creator", f"内容生成失败: {e}", 0.02, {"level": "error"})
+            raise RuntimeError(f"Content creator failed: {e}") from e
+        logger.info("Content creator completed in %.1fs", time.time() - t0)
+        result["stages"]["content_creator"] = creator_result
+        content = creator_result.get("generated_content", "")
+        content_type = creator_result.get("content_type", content_type)
+        emit(
+            "content_creator",
+            f"内容生成完成：{creator_result.get('topic', '')}",
+            0.05,
+            {"topic": creator_result.get("topic", "")},
+        )
+
     context = {
         "content": content,
         "content_type": content_type,
@@ -160,6 +194,7 @@ def run_pipeline(
             "decision_report": {"decisions": [], "summary": "终稿生成失败"},
             "promo_materials": {"social_posts": [], "hashtag_suggestions": []},
             "adaptation_suggestions": {"suggestions": [], "summary": ""},
+            "platform_content": {"_parse_failed": True},
         }
         result["degraded"].append("finalizer")
         emit(
@@ -183,6 +218,7 @@ def run_pipeline(
         "cultural_notes": translation_result.get("cultural_notes"),
         "adaptation_suggestions": final_result.get("adaptation_suggestions"),
         "promo_materials": final_result.get("promo_materials"),
+        "platform_content": final_result.get("platform_content"),
     }
 
     status_msg = (
