@@ -366,5 +366,56 @@
         "cultural_note": "A beloved underdog declaration in Chinese storytelling — the hero vows that those who look down on them now will regret it when they rise to power."
       }
     }
+  },
+  {
+    "concept": "三尺白绫",
+    "context": "古代赐死方式，用白绫自缢。三尺白绫是赐死的标志性工具",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "three feet of white silk for self-strangulation",
+          "the white silk of death"
+        ],
+        "bad": ["three feet white silk", "white ribbon"],
+        "principle": "这是特定的赐死方式，翻译要传达白绫=死亡工具的含义，不能当作普通丝绸处理",
+        "avoid": ["ribbon", "scarf", "cloth"],
+        "cultural_note": "The white silk was the instrument of a 'dignified' execution in imperial China. When the Emperor granted death, a length of white silk was sent for the condemned to hang themselves — considered more honorable than public execution by beheading."
+      }
+    }
+  },
+  {
+    "concept": "冤家路窄",
+    "context": "仇人偏偏狭路相逢，命运安排让仇人无法避开彼此",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": [
+          "Fate has a cruel sense of humor — we meet again",
+          "Of all the places, our paths cross here"
+        ],
+        "bad": ["injustice family road narrow", "enemies on a narrow road"],
+        "principle": "完全意译，传达'命运让仇人无法避开'的含义。不要直译路窄",
+        "avoid": ["narrow road", "narrow path", "injustice"],
+        "cultural_note": "A classic Chinese idiom expressing the irony of enemies inevitably crossing paths. It implies that fate conspires to force confrontations between rivals, no matter how large the world may be."
+      }
+    }
+  },
+  {
+    "concept": "妃嫔",
+    "context": "皇帝后宫的女性成员等级体系，从皇后到常在有严格的位分制度",
+    "content_types": ["drama", "novel"],
+    "genre": "palace",
+    "mappings": {
+      "en": {
+        "good": ["Imperial Consort", "consort of the Emperor"],
+        "bad": ["concubine", "secondary wife"],
+        "principle": "不要用 concubine（现代含贬义），用 consort（正式宫廷用语）。后宫等级：皇后 > 皇贵妃 > 贵妃 > 妃 > 嫔 > 贵人 > 常在",
+        "avoid": ["concubine", "secondary wife", "mistress"],
+        "cultural_note": "The imperial harem had a strict hierarchy: Empress (皇后) > Imperial Noble Consort (皇贵妃) > Noble Consort (贵妃) > Consort (妃) > Concubine (嫔) > Noble Lady (贵人) > First-Class Attendant (常在). 'Consort' is preferred over 'concubine' in translation as the latter carries modern pejorative connotations."
+      }
+    }
   }
 ]

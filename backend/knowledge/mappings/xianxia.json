@@ -235,5 +235,194 @@
         "cultural_note": "Core Formation is a pivotal breakthrough where scattered spiritual energy condenses into a solid Golden Core. Many cultivators spend decades attempting it — failure can mean permanent stagnation or death."
       }
     }
+  },
+  {
+    "concept": "灵气",
+    "context": "修仙世界的基础能量，弥漫天地之间，是所有修炼的根基",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["spiritual energy", "spiritual qi"],
+        "bad": ["spirit gas", "magic air", "soul energy"],
+        "principle": "spiritual energy 是标准译法。灵气是所有修炼的基础，修炼者吸收天地灵气来提升修为",
+        "avoid": ["gas", "air", "magic"],
+        "cultural_note": "Spiritual energy permeates the entire cultivation world — it flows through the earth, gathers in sacred mountains, and can be absorbed by cultivators to fuel their advancement. Areas rich in spiritual energy are highly prized, while 'spiritual energy depletion' signals the decline of an era."
+      }
+    }
+  },
+  {
+    "concept": "修为",
+    "context": "修炼积累的总体实力，是量化修炼者强弱的核心概念",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "cultivation level",
+          "cultivation attainment",
+          "cultivation base"
+        ],
+        "bad": ["repair for", "practice achievement"],
+        "principle": "修为是量化修炼者实力的概念，包括境界、战斗力、对道的领悟等综合指标",
+        "avoid": ["repair", "practice", "achievement"],
+        "cultural_note": "Cultivation level is the comprehensive measure of a cultivator's power — encompassing their realm, combat ability, and understanding of the Dao. It can be gained through meditation, combat, consuming treasures, or enlightenment, and can be lost through injury or Dao Heart collapse."
+      }
+    }
+  },
+  {
+    "concept": "逆天改命",
+    "context": "违抗天道安排改变命运，修仙叙事中最热血的主题之一",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "defy the heavens and change one's destiny",
+          "defy fate itself"
+        ],
+        "bad": ["reverse sky change life", "against heaven change destiny"],
+        "principle": "这是修仙叙事最热血的主题，翻译要有史诗感和反叛精神。主角不接受命运安排，要逆天而行",
+        "avoid": ["reverse", "sky", "life"],
+        "cultural_note": "The ultimate act of rebellion in xianxia fiction — refusing the destiny assigned by Heaven and forging one's own path through sheer will and power. This theme resonates deeply with Chinese readers as it embodies the spirit of refusing to accept one's station in life."
+      }
+    }
+  },
+  {
+    "concept": "道友",
+    "context": "修仙者之间的尊称，表示同为修道之人的平等敬意",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Fellow Daoist", "Daoist friend"],
+        "bad": ["road friend", "way friend"],
+        "principle": "Fellow Daoist 是社区标准译法，大写作为尊称。用于修仙者之间初次见面或平辈交流",
+        "avoid": ["road", "way", "path friend"],
+        "cultural_note": "A polite form of address between cultivators who are not close acquaintances, acknowledging mutual respect as fellow seekers of the Dao. It is the xianxia equivalent of 'sir' or 'madam' but carries a sense of shared spiritual pursuit."
+      }
+    }
+  },
+  {
+    "concept": "贫道",
+    "context": "道士/修仙者的谦称，类似'臣妾'的谦虚用法",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["this humble Daoist", "this poor Daoist"],
+        "bad": ["poor road", "cheap way"],
+        "principle": "谦称但说话者可能很强大。翻译保留谦虚语气但不要暗示真的贫穷或弱小",
+        "avoid": ["poor road", "cheap", "beggar"],
+        "cultural_note": "A humble self-reference used by Daoist cultivators, regardless of their actual power level. A world-shattering Immortal might still call themselves 'this humble Daoist' — the modesty is ritualistic, not literal."
+      }
+    }
+  },
+  {
+    "concept": "师父",
+    "context": "修仙门派中的师父，传授修炼功法和道的引路人",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Master", "my Master"],
+        "bad": ["teacher", "instructor"],
+        "principle": "修仙语境中 Master 大写，体现尊师重道。师父不仅教技术，更是修道路上的精神导师",
+        "avoid": ["teacher", "instructor", "professor"],
+        "cultural_note": "The Master-disciple relationship is sacred in cultivation fiction — a Master does not merely teach techniques but guides the disciple's entire path of cultivation. Betraying one's Master is among the gravest sins in the xianxia moral code."
+      }
+    }
+  },
+  {
+    "concept": "弟子",
+    "context": "修仙门派中的徒弟，跟随师父修炼的后辈",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["disciple", "this disciple"],
+        "bad": ["student", "apprentice"],
+        "principle": "disciple 比 student 更正式，匹配修仙语境的庄重感。弟子自称时用 this disciple",
+        "avoid": ["student", "apprentice", "pupil"],
+        "cultural_note": "A disciple is bound to their Master by a formal ceremony and oath. The relationship is quasi-familial — fellow disciples are 'brothers' and 'sisters', and the sect becomes a second family. 'Student' is too casual for this bond."
+      }
+    }
+  },
+  {
+    "concept": "少侠",
+    "context": "对年轻武者/修仙者的尊称，带有赞赏和期许",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Young Hero", "Young Warrior"],
+        "bad": ["small hero", "little knight"],
+        "principle": "Young Hero 大写作为尊称，表达对年轻人才的敬意和对其未来的期许",
+        "avoid": ["small", "little", "kid"],
+        "cultural_note": "An honorific for a young person of martial prowess, implying both current skill and future greatness. It is often used by elders or innkeepers to show respect to a young cultivator or warrior passing through."
+      }
+    }
+  },
+  {
+    "concept": "门派",
+    "context": "修仙/武侠世界中的组织，有自己的山门、功法和传承",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["sect", "cultivation sect"],
+        "bad": ["gate faction", "door group"],
+        "principle": "sect 是修仙/武侠社区标准译法，已被广泛接受",
+        "avoid": ["gate", "door", "faction", "group"],
+        "cultural_note": "A sect is a formal cultivation organization with its own territory (often a sacred mountain), unique techniques, hierarchy, and lineage of Masters. Sects compete for resources, disciples, and prestige — they are part school, part clan, part nation."
+      }
+    }
+  },
+  {
+    "concept": "师兄",
+    "context": "同门中年长或入门早的师兄，同一师父门下的年长弟子",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["Senior Brother", "Elder Brother (in the sect)"],
+        "bad": ["teacher brother", "master's elder son"],
+        "principle": "Senior Brother 大写，是同门关系称谓。入门先后决定辈分，与年龄无关",
+        "avoid": ["teacher brother", "master's son"],
+        "cultural_note": "Seniority among disciples is determined by the order they joined the sect, not by age. A 'Senior Brother' may be younger in years but commands respect due to earlier admission. The eldest Senior Brother (大师兄) often serves as de facto leader when the Master is absent."
+      }
+    }
+  },
+  {
+    "concept": "妖兽",
+    "context": "修仙世界中吸收灵气修炼的野兽，可能化形为人",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": ["demon beast", "spirit beast"],
+        "bad": ["monster animal", "evil beast"],
+        "principle": "demon beast 是标准译法。妖兽不一定是邪恶的，只是野兽通过修炼获得了灵智",
+        "avoid": ["monster", "animal", "evil"],
+        "cultural_note": "Demon beasts are animals that have absorbed spiritual energy and gained intelligence, power, and eventually the ability to take human form. They are not inherently evil — some become allies or mounts for cultivators. Their inner cores (demon cores) are valuable cultivation resources."
+      }
+    }
+  },
+  {
+    "concept": "仙人等级",
+    "context": "仙人之上的等级体系，从天仙到大罗金仙的递进",
+    "content_types": ["drama", "novel", "game"],
+    "genre": "xianxia",
+    "mappings": {
+      "en": {
+        "good": [
+          "Celestial Immortal, Golden Immortal, Grand Luo Golden Immortal"
+        ],
+        "bad": ["sky fairy, gold fairy, big Luo gold fairy"],
+        "principle": "每个等级大写作为专有名词。天仙 > 金仙 > 大罗金仙，层级递进",
+        "avoid": ["fairy", "sky fairy", "gold fairy"],
+        "cultural_note": "The immortal hierarchy extends far beyond mortal cultivation realms. Celestial Immortal (天仙) is the entry level of true immortality, Golden Immortal (金仙) commands cosmic-level power, and Grand Luo Golden Immortal (大罗金仙) represents the pinnacle — beings who transcend time, space, and causality itself."
+      }
+    }
   }
 ]
