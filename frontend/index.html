@@ -1,557 +1,591 @@
 <!doctype html>
-<html lang="zh-CN" class="dark">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CultureBridge — AI 文化顾问引擎</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap"
       rel="stylesheet"
     />
     <script>
       tailwind.config = {
-        darkMode: "class",
         theme: {
           extend: {
             colors: {
-              surface: {
-                50: "#1a1a2e",
-                100: "#16213e",
-                200: "#0f3460",
-                300: "#252540",
+              ink: {
+                950: "#0a0a14",
+                900: "#0f0f1e",
+                800: "#1a1a2e",
+                700: "#252540",
+                600: "#35355a",
               },
-              accent: {
-                DEFAULT: "#d4a574",
-                light: "#e8c9a0",
-                dark: "#b8834a",
-                glow: "rgba(212,165,116,0.15)",
+              gold: {
+                DEFAULT: "#c9a96e",
+                light: "#e0c992",
+                dim: "rgba(201,169,110,0.12)",
+                glow: "rgba(201,169,110,0.25)",
               },
-              risk: { high: "#ef4444", medium: "#f59e0b", low: "#22c55e" },
+              jade: { DEFAULT: "#5a9e7a", dim: "rgba(90,158,122,0.15)" },
+              cinnabar: { DEFAULT: "#c44e4e", dim: "rgba(196,78,78,0.15)" },
             },
             fontFamily: {
-              serif: ['"Noto Serif SC"', "serif"],
-              sans: ['"Noto Sans SC"', "system-ui", "sans-serif"],
+              display: ['"Noto Serif SC"', '"Source Serif 4"', "serif"],
+              body: ['"Noto Sans SC"', "system-ui", "sans-serif"],
+              latin: ['"Source Serif 4"', "Georgia", "serif"],
             },
           },
         },
       };
     </script>
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
         font-family: "Noto Sans SC", system-ui, sans-serif;
+        background: #0a0a14;
+        color: #d4d4e0;
+        overflow-x: hidden;
       }
-      .agent-pulse {
-        animation: pulse-border 2s ease-in-out infinite;
-      }
-      @keyframes pulse-border {
-        0%,
-        100% {
-          border-color: rgba(212, 165, 116, 0.4);
-        }
-        50% {
-          border-color: rgba(212, 165, 116, 1);
-        }
-      }
-      .tab-slide {
-        transition:
-          transform 0.25s ease,
-          opacity 0.25s ease;
-      }
-      .concept-badge {
+      .culture-mark {
+        background: rgba(201, 169, 110, 0.12);
+        border-bottom: 2px solid rgba(201, 169, 110, 0.4);
+        cursor: help;
+        padding: 1px 3px;
+        border-radius: 2px;
         transition: all 0.2s ease;
       }
-      .concept-badge:hover {
-        box-shadow: 0 0 12px rgba(212, 165, 116, 0.4);
+      .culture-mark:hover {
+        background: rgba(201, 169, 110, 0.25);
+        border-bottom-color: #c9a96e;
       }
-      textarea:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.5);
+      .culture-card {
+        position: fixed;
+        z-index: 50;
+        width: 340px;
+        background: #1a1a2e;
+        border: 1px solid rgba(201, 169, 110, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow:
+          0 20px 60px rgba(0, 0, 0, 0.6),
+          0 0 30px rgba(201, 169, 110, 0.08);
+        transform: scale(0.95) translateY(4px);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.2s ease;
       }
-      .fade-in {
-        animation: fadeIn 0.4s ease forwards;
+      .culture-card.visible {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+        pointer-events: auto;
       }
-      @keyframes fadeIn {
+      .trans-line {
+        animation: lineIn 0.4s ease forwards;
+        opacity: 0;
+      }
+      @keyframes lineIn {
         from {
           opacity: 0;
-          transform: translateY(8px);
+          transform: translateX(8px);
         }
         to {
           opacity: 1;
-          transform: translateY(0);
+          transform: translateX(0);
         }
       }
+      .scan-glow {
+        animation: glowPulse 1.5s ease-in-out;
+      }
+      @keyframes glowPulse {
+        0% {
+          background: transparent;
+          border-bottom-color: transparent;
+        }
+        40% {
+          background: rgba(201, 169, 110, 0.3);
+          border-bottom-color: #c9a96e;
+        }
+        100% {
+          background: rgba(201, 169, 110, 0.12);
+          border-bottom-color: rgba(201, 169, 110, 0.4);
+        }
+      }
+      .agent-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+      }
+      .agent-dot.pending {
+        background: #35355a;
+      }
+      .agent-dot.active {
+        background: #c9a96e;
+        animation: dotPulse 1s ease-in-out infinite;
+      }
+      .agent-dot.done {
+        background: #5a9e7a;
+      }
+      .agent-dot.error {
+        background: #c44e4e;
+      }
+      @keyframes dotPulse {
+        0%,
+        100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      .risk-high {
+        background: rgba(196, 78, 78, 0.15);
+        color: #e87171;
+        border: 1px solid rgba(196, 78, 78, 0.3);
+      }
+      .risk-medium {
+        background: rgba(234, 179, 8, 0.12);
+        color: #eab308;
+        border: 1px solid rgba(234, 179, 8, 0.25);
+      }
+      .risk-low {
+        background: rgba(90, 158, 122, 0.15);
+        color: #5a9e7a;
+        border: 1px solid rgba(90, 158, 122, 0.3);
+      }
       ::-webkit-scrollbar {
-        width: 6px;
+        width: 4px;
       }
       ::-webkit-scrollbar-track {
-        background: #1a1a2e;
+        background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: #4a4a6a;
-        border-radius: 3px;
+        background: #35355a;
+        border-radius: 2px;
+      }
+      textarea:focus,
+      select:focus,
+      button:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.4);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .culture-mark,
+        .culture-card,
+        .trans-line,
+        .scan-glow,
+        .agent-dot {
+          animation: none !important;
+          transition: none !important;
+        }
       }
     </style>
   </head>
-  <body class="bg-surface-50 text-gray-200 min-h-screen">
-    <!-- Header -->
-    <header class="border-b border-gray-800 px-6 py-4">
-      <div class="max-w-6xl mx-auto flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div
-            class="w-9 h-9 rounded-lg bg-accent/20 flex items-center justify-center"
+  <body class="min-h-screen flex flex-col">
+    <header class="flex-shrink-0 border-b border-ink-700/50 px-5 py-3">
+      <div
+        class="max-w-[1400px] mx-auto flex items-center justify-between gap-4 flex-wrap"
+      >
+        <div class="flex items-center gap-2.5">
+          <span class="font-display text-gold text-lg font-bold tracking-wider"
+            >CultureBridge</span
           >
-            <span class="text-accent font-serif text-lg font-bold">CB</span>
-          </div>
-          <div>
-            <h1 class="font-serif text-xl font-bold text-white tracking-wide">
-              CultureBridge
-            </h1>
-            <p class="text-xs text-gray-500">
-              AI 文化顾问引擎 &middot; Cultural Consultant Engine
-            </p>
-          </div>
+          <span class="text-[10px] text-ink-600 hidden sm:inline"
+            >AI 文化顾问引擎</span
+          >
         </div>
-        <div class="text-xs text-gray-600">
-          数字文化出海+ &middot; 2026 文创上海
+        <div class="flex items-center gap-2 flex-wrap">
+          <select
+            id="content-type"
+            class="bg-ink-800 border border-ink-700 rounded px-2 py-1 text-xs text-gray-400"
+          >
+            <option value="drama">短剧</option>
+            <option value="novel">网文</option>
+            <option value="game">游戏</option>
+          </select>
+          <select
+            id="target-lang"
+            class="bg-ink-800 border border-ink-700 rounded px-2 py-1 text-xs text-gray-400"
+          >
+            <option value="en">EN</option>
+            <option value="ja">JA</option>
+            <option value="ko">KO</option>
+          </select>
+          <select
+            id="target-market"
+            class="bg-ink-800 border border-ink-700 rounded px-2 py-1 text-xs text-gray-400"
+          >
+            <option value="us">US</option>
+            <option value="sea">SEA</option>
+            <option value="jp">JP</option>
+            <option value="kr">KR</option>
+            <option value="eu">EU</option>
+          </select>
+          <div class="w-px h-5 bg-ink-700 mx-1"></div>
+          <button
+            onclick="loadDemo('palace')"
+            class="px-2 py-1 text-[10px] rounded bg-gold/10 text-gold/70 hover:text-gold hover:bg-gold/20 transition"
+          >
+            宫廷剧
+          </button>
+          <button
+            onclick="loadDemo('xianxia')"
+            class="px-2 py-1 text-[10px] rounded bg-gold/10 text-gold/70 hover:text-gold hover:bg-gold/20 transition"
+          >
+            修仙
+          </button>
+          <button
+            onclick="loadDemo('game')"
+            class="px-2 py-1 text-[10px] rounded bg-gold/10 text-gold/70 hover:text-gold hover:bg-gold/20 transition"
+          >
+            游戏
+          </button>
+          <div class="w-px h-5 bg-ink-700 mx-1"></div>
+          <button
+            id="start-btn"
+            onclick="startAnalysis()"
+            class="px-4 py-1.5 text-xs font-medium rounded bg-gold text-ink-950 hover:bg-gold-light transition"
+          >
+            文化 X 光
+          </button>
         </div>
       </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-6 py-6 space-y-6">
-      <!-- Input Section -->
-      <section
-        id="input-section"
-        class="bg-surface-300/50 rounded-xl p-6 border border-gray-800"
+    <div
+      id="pipeline-bar"
+      class="flex-shrink-0 border-b border-ink-700/30 px-5 py-1.5 hidden"
+    >
+      <div
+        class="max-w-[1400px] mx-auto flex items-center gap-6 text-[10px] text-gray-500"
       >
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="font-serif text-lg text-white">
-            输入内容
-            <span class="text-gray-500 text-sm font-sans">Input Content</span>
-          </h2>
-          <div class="flex gap-2">
-            <button
-              onclick="loadDemo('palace')"
-              class="px-3 py-1.5 text-xs rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition border border-accent/20"
-            >
-              宫廷剧 Demo
-            </button>
-            <button
-              onclick="loadDemo('xianxia')"
-              class="px-3 py-1.5 text-xs rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition border border-accent/20"
-            >
-              修仙网文 Demo
-            </button>
-            <button
-              onclick="loadDemo('game')"
-              class="px-3 py-1.5 text-xs rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition border border-accent/20"
-            >
-              游戏对白 Demo
-            </button>
-          </div>
+        <div class="flex items-center gap-1.5">
+          <div id="dot-scanner" class="agent-dot pending"></div>
+          <span>扫描</span>
         </div>
-
-        <textarea
-          id="content-input"
-          rows="6"
-          placeholder="粘贴中文剧本、网文章节或游戏对白..."
-          class="w-full bg-surface-50 border border-gray-700 rounded-lg p-4 text-sm text-gray-200 placeholder-gray-600 resize-y mb-1"
-          oninput="updateCharCount()"
-        ></textarea>
-        <div
-          class="flex justify-between items-center mb-4 text-xs text-gray-500"
-        >
-          <span id="char-count">0 字</span>
-          <span id="time-estimate"></span>
+        <div class="flex items-center gap-1.5">
+          <div id="dot-matcher" class="agent-dot pending"></div>
+          <span>匹配</span>
         </div>
-
-        <!-- Error panel (hidden by default) -->
-        <div
-          id="error-panel"
-          class="hidden mb-4 bg-red-900/30 border border-red-800 rounded-lg p-4"
-        >
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-red-400 text-sm font-medium"
-                >Pipeline 失败</span
-              >
-              <span id="error-detail" class="text-red-300 text-xs"></span>
-            </div>
-            <button
-              onclick="retryAnalysis()"
-              class="px-3 py-1 text-xs rounded bg-red-800 text-red-200 hover:bg-red-700 transition"
-            >
-              重试 Retry
-            </button>
-          </div>
+        <div class="flex items-center gap-1.5">
+          <div id="dot-translator" class="agent-dot pending"></div>
+          <span>翻译</span>
         </div>
+        <div class="flex items-center gap-1.5">
+          <div id="dot-reviewer" class="agent-dot pending"></div>
+          <span>审校</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <div id="dot-finalizer" class="agent-dot pending"></div>
+          <span>终稿</span>
+        </div>
+        <div class="flex-1"></div>
+        <span id="status-text" class="text-gray-600 truncate max-w-xs"></span>
+        <span
+          id="elapsed"
+          class="text-gray-600 tabular-nums w-10 text-right"
+        ></span>
+      </div>
+    </div>
 
-        <!-- Degradation warning (hidden by default) -->
+    <main class="flex-1 flex min-h-0" style="height: calc(100vh - 100px)">
+      <section class="w-1/2 border-r border-ink-700/30 flex flex-col">
         <div
-          id="degradation-panel"
-          class="hidden mb-4 bg-yellow-900/30 border border-yellow-800 rounded-lg p-3"
+          class="px-5 py-2 border-b border-ink-700/20 flex items-center justify-between"
         >
-          <span class="text-yellow-400 text-xs"
-            >部分环节已跳过，结果可能不完整</span
-          >
           <span
-            id="degradation-detail"
-            class="text-yellow-300 text-xs ml-2"
-          ></span>
+            class="text-[11px] text-gray-500 font-medium tracking-wide uppercase"
+            >原文 Source</span
+          >
+          <span id="char-count" class="text-[10px] text-gray-600">0 字</span>
         </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-          <div>
-            <label class="block text-xs text-gray-500 mb-1"
-              >内容类型 Type</label
-            >
-            <select
-              id="content-type"
-              class="w-full bg-surface-50 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200"
-            >
-              <option value="drama">短剧 Drama</option>
-              <option value="novel">网文 Novel</option>
-              <option value="game">游戏 Game</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs text-gray-500 mb-1"
-              >目标语种 Language</label
-            >
-            <select
-              id="target-lang"
-              class="w-full bg-surface-50 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200"
-            >
-              <option value="en">English</option>
-              <option value="ja">Japanese</option>
-              <option value="ko">Korean</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs text-gray-500 mb-1"
-              >目标市场 Market</label
-            >
-            <select
-              id="target-market"
-              class="w-full bg-surface-50 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200"
-            >
-              <option value="us">美国 US</option>
-              <option value="sea">东南亚 SEA</option>
-              <option value="jp">日本 Japan</option>
-              <option value="kr">韩国 Korea</option>
-              <option value="eu">欧洲 Europe</option>
-              <option value="mena">中东 MENA</option>
-            </select>
-          </div>
-          <div class="flex items-end">
-            <button
-              id="start-btn"
-              onclick="startAnalysis()"
-              class="w-full bg-accent hover:bg-accent-dark text-surface-50 font-semibold py-2 px-4 rounded-lg transition text-sm"
-            >
-              开始分析 Start
-            </button>
-          </div>
+        <div id="source-input" class="flex-1 flex flex-col min-h-0">
+          <textarea
+            id="content-input"
+            placeholder="粘贴中文剧本、网文章节或游戏对白..."
+            oninput="updateCharCount()"
+            class="flex-1 bg-transparent p-5 text-sm text-gray-300 placeholder-ink-600 resize-none border-none leading-relaxed"
+          ></textarea>
         </div>
-      </section>
-
-      <!-- Agent Progress -->
-      <section id="progress-section" class="hidden">
-        <h2 class="font-serif text-lg text-white mb-3">
-          Agent Pipeline
-          <span class="text-gray-500 text-sm font-sans">流水线进度</span>
-        </h2>
-        <div class="grid grid-cols-5 gap-3">
+        <div id="source-annotated" class="flex-1 overflow-y-auto p-5 hidden">
           <div
-            id="agent-scanner"
-            class="agent-card bg-surface-300/50 rounded-lg p-3 border border-gray-800 transition-all"
-          >
-            <div class="flex items-center gap-2 mb-2">
-              <div
-                class="agent-icon w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs text-gray-400"
-              >
-                1
-              </div>
-              <span class="text-xs font-medium text-gray-400">文化扫描</span>
-            </div>
-            <p class="agent-status text-xs text-gray-600">Scanner</p>
-            <div class="mt-2 h-1 bg-gray-800 rounded-full overflow-hidden">
-              <div
-                class="agent-bar h-full bg-gray-600 rounded-full transition-all duration-500"
-                style="width: 0%"
-              ></div>
-            </div>
-          </div>
-          <div
-            id="agent-matcher"
-            class="agent-card bg-surface-300/50 rounded-lg p-3 border border-gray-800 transition-all"
-          >
-            <div class="flex items-center gap-2 mb-2">
-              <div
-                class="agent-icon w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs text-gray-400"
-              >
-                2
-              </div>
-              <span class="text-xs font-medium text-gray-400">知识库匹配</span>
-            </div>
-            <p class="agent-status text-xs text-gray-600">KB Matcher</p>
-            <div class="mt-2 h-1 bg-gray-800 rounded-full overflow-hidden">
-              <div
-                class="agent-bar h-full bg-gray-600 rounded-full transition-all duration-500"
-                style="width: 0%"
-              ></div>
-            </div>
-          </div>
-          <div
-            id="agent-translator"
-            class="agent-card bg-surface-300/50 rounded-lg p-3 border border-gray-800 transition-all"
-          >
-            <div class="flex items-center gap-2 mb-2">
-              <div
-                class="agent-icon w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs text-gray-400"
-              >
-                3
-              </div>
-              <span class="text-xs font-medium text-gray-400"
-                >文化适配翻译</span
-              >
-            </div>
-            <p class="agent-status text-xs text-gray-600">Translator</p>
-            <div class="mt-2 h-1 bg-gray-800 rounded-full overflow-hidden">
-              <div
-                class="agent-bar h-full bg-gray-600 rounded-full transition-all duration-500"
-                style="width: 0%"
-              ></div>
-            </div>
-          </div>
-          <div
-            id="agent-reviewer"
-            class="agent-card bg-surface-300/50 rounded-lg p-3 border border-gray-800 transition-all"
-          >
-            <div class="flex items-center gap-2 mb-2">
-              <div
-                class="agent-icon w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs text-gray-400"
-              >
-                4
-              </div>
-              <span class="text-xs font-medium text-gray-400">审校</span>
-            </div>
-            <p class="agent-status text-xs text-gray-600">Reviewer</p>
-            <div class="mt-2 h-1 bg-gray-800 rounded-full overflow-hidden">
-              <div
-                class="agent-bar h-full bg-gray-600 rounded-full transition-all duration-500"
-                style="width: 0%"
-              ></div>
-            </div>
-          </div>
-          <div
-            id="agent-finalizer"
-            class="agent-card bg-surface-300/50 rounded-lg p-3 border border-gray-800 transition-all"
-          >
-            <div class="flex items-center gap-2 mb-2">
-              <div
-                class="agent-icon w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs text-gray-400"
-              >
-                5
-              </div>
-              <span class="text-xs font-medium text-gray-400">终稿生成</span>
-            </div>
-            <p class="agent-status text-xs text-gray-600">Finalizer</p>
-            <div class="mt-2 h-1 bg-gray-800 rounded-full overflow-hidden">
-              <div
-                class="agent-bar h-full bg-gray-600 rounded-full transition-all duration-500"
-                style="width: 0%"
-              ></div>
-            </div>
-          </div>
-        </div>
-        <div class="mt-3 flex items-center gap-3">
-          <div class="flex-1 h-1.5 bg-gray-800 rounded-full overflow-hidden">
-            <div
-              id="overall-progress"
-              class="h-full bg-accent rounded-full transition-all duration-700"
-              style="width: 0%"
-            ></div>
-          </div>
-          <span id="progress-text" class="text-xs text-gray-500 w-10 text-right"
-            >0%</span
-          >
-        </div>
-      </section>
-
-      <!-- Results Tabs -->
-      <section id="results-section" class="hidden">
-        <div class="flex items-center justify-between mb-4">
-          <div
-            class="flex gap-1 bg-surface-300/50 rounded-lg p-1 border border-gray-800"
-          >
-            <button
-              onclick="switchTab('translation')"
-              class="tab-btn px-4 py-2 text-xs rounded-md transition"
-              data-tab="translation"
-            >
-              翻译对比 Translation
-            </button>
-            <button
-              onclick="switchTab('decisions')"
-              class="tab-btn px-4 py-2 text-xs rounded-md transition"
-              data-tab="decisions"
-            >
-              决策报告 Decisions
-            </button>
-            <button
-              onclick="switchTab('risks')"
-              class="tab-btn px-4 py-2 text-xs rounded-md transition"
-              data-tab="risks"
-            >
-              文化风险 Risks
-            </button>
-            <button
-              onclick="switchTab('notes')"
-              class="tab-btn px-4 py-2 text-xs rounded-md transition"
-              data-tab="notes"
-            >
-              文化注释 Notes
-            </button>
-          </div>
-          <div class="flex gap-2">
-            <button
-              onclick="exportMarkdown()"
-              class="px-3 py-1.5 text-xs rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition"
-            >
-              导出 Markdown
-            </button>
-          </div>
-        </div>
-
-        <!-- Tab: Translation Comparison (Hero Feature) -->
-        <div id="tab-translation" class="tab-content">
-          <div
-            class="bg-surface-300/50 rounded-xl border border-gray-800 overflow-hidden"
-          >
-            <div
-              class="grid grid-cols-3 bg-surface-100/50 border-b border-gray-800"
-            >
-              <div
-                class="px-4 py-3 text-xs font-semibold text-gray-400 border-r border-gray-800"
-              >
-                原文 Original
-              </div>
-              <div
-                class="px-4 py-3 text-xs font-semibold text-gray-500 border-r border-gray-800"
-              >
-                Google Translate
-              </div>
-              <div class="px-4 py-3 text-xs font-semibold text-accent">
-                CultureBridge
-              </div>
-            </div>
-            <div
-              id="translation-rows"
-              class="divide-y divide-gray-800/50"
-            ></div>
-          </div>
-        </div>
-
-        <!-- Tab: Decision Report -->
-        <div id="tab-decisions" class="tab-content hidden">
-          <div id="decisions-content" class="space-y-3"></div>
-        </div>
-
-        <!-- Tab: Risk Report -->
-        <div id="tab-risks" class="tab-content hidden">
-          <div
-            id="risks-header"
-            class="bg-surface-300/50 rounded-xl border border-gray-800 p-4 mb-4"
+            id="annotated-text"
+            class="text-sm text-gray-300 leading-loose"
           ></div>
-          <div id="risks-content" class="space-y-3"></div>
         </div>
+      </section>
 
-        <!-- Tab: Cultural Notes -->
-        <div id="tab-notes" class="tab-content hidden">
-          <div id="notes-content" class="space-y-3"></div>
+      <section class="w-1/2 flex flex-col bg-ink-900/30">
+        <div
+          class="px-5 py-2 border-b border-ink-700/20 flex items-center justify-between"
+        >
+          <span
+            class="text-[11px] text-gray-500 font-medium tracking-wide uppercase"
+            >适配翻译 Adapted</span
+          >
+          <button
+            onclick="exportReport()"
+            class="text-[10px] text-gray-600 hover:text-gold transition hidden"
+            id="export-btn"
+          >
+            导出
+          </button>
+        </div>
+        <div
+          id="translation-empty"
+          class="flex-1 flex items-center justify-center"
+        >
+          <div class="text-center">
+            <p class="text-gray-600 text-sm">
+              点击 <span class="text-gold">"文化 X 光"</span> 开始
+            </p>
+            <p class="text-gray-700 text-xs mt-1">悬停高亮词汇查看文化卡片</p>
+          </div>
+        </div>
+        <div id="translation-output" class="flex-1 overflow-y-auto p-5 hidden">
+          <div id="translation-lines" class="space-y-0.5"></div>
         </div>
       </section>
     </main>
 
-    <footer
-      class="border-t border-gray-800 mt-12 py-4 text-center text-xs text-gray-600"
+    <div
+      id="intel-panel"
+      class="flex-shrink-0 border-t border-ink-700/30 hidden"
     >
-      CultureBridge &copy; 2026 &middot; AI Cultural Consultant for Chinese
-      Content Going Global
-    </footer>
+      <div class="max-w-[1400px] mx-auto">
+        <div class="flex border-b border-ink-700/20">
+          <button
+            onclick="switchIntel('decisions')"
+            class="intel-tab px-4 py-2 text-[11px] text-gray-500 hover:text-gray-300 border-b-2 border-transparent transition"
+            data-tab="decisions"
+          >
+            翻译决策
+          </button>
+          <button
+            onclick="switchIntel('risks')"
+            class="intel-tab px-4 py-2 text-[11px] text-gray-500 hover:text-gray-300 border-b-2 border-transparent transition"
+            data-tab="risks"
+          >
+            文化风险
+          </button>
+          <button
+            onclick="switchIntel('notes')"
+            class="intel-tab px-4 py-2 text-[11px] text-gray-500 hover:text-gray-300 border-b-2 border-transparent transition"
+            data-tab="notes"
+          >
+            文化注释
+          </button>
+          <button
+            onclick="switchIntel('promo')"
+            class="intel-tab px-4 py-2 text-[11px] text-gray-500 hover:text-gray-300 border-b-2 border-transparent transition"
+            data-tab="promo"
+          >
+            推广素材
+          </button>
+        </div>
+        <div
+          id="intel-decisions"
+          class="intel-content p-4 max-h-48 overflow-y-auto hidden"
+        ></div>
+        <div
+          id="intel-risks"
+          class="intel-content p-4 max-h-48 overflow-y-auto hidden"
+        ></div>
+        <div
+          id="intel-notes"
+          class="intel-content p-4 max-h-48 overflow-y-auto hidden"
+        ></div>
+        <div
+          id="intel-promo"
+          class="intel-content p-4 max-h-48 overflow-y-auto hidden"
+        ></div>
+      </div>
+    </div>
+
+    <div id="culture-card" class="culture-card">
+      <div class="flex items-center justify-between mb-2">
+        <span
+          id="cc-concept"
+          class="font-display text-gold text-base font-semibold"
+        ></span>
+        <span
+          id="cc-genre"
+          class="text-[9px] px-1.5 py-0.5 rounded bg-gold/10 text-gold/60"
+        ></span>
+      </div>
+      <p
+        id="cc-context"
+        class="text-[11px] text-gray-400 mb-3 leading-relaxed"
+      ></p>
+      <div class="grid grid-cols-2 gap-2 mb-3">
+        <div>
+          <p
+            class="text-[9px] text-jade font-medium mb-1 uppercase tracking-wider"
+          >
+            Good
+          </p>
+          <div id="cc-good" class="text-[11px] text-gray-300 space-y-0.5"></div>
+        </div>
+        <div>
+          <p
+            class="text-[9px] text-cinnabar font-medium mb-1 uppercase tracking-wider"
+          >
+            Never use
+          </p>
+          <div
+            id="cc-bad"
+            class="text-[11px] text-gray-500 space-y-0.5 line-through"
+          ></div>
+        </div>
+      </div>
+      <p
+        id="cc-note"
+        class="text-[10px] text-gray-400 border-t border-ink-700 pt-2 leading-relaxed font-latin italic"
+      ></p>
+    </div>
 
     <script>
-      // ---- State ----
-      let currentJobId = null;
-      let jobOutput = null;
-
-      // ---- Demo Data ----
+      let currentJobId = null,
+        jobOutput = null,
+        elapsedInterval = null,
+        startTime = null;
       const DEMOS = {
         palace: `皇上，臣妾做不到啊！\n本宫乏了，退下吧。\n冤家路窄，今日就让本王会会你。\n你好大的胆子，竟敢在太岁头上动土！\n三十年河东，三十年河西，莫欺少年穷。\n知人知面不知心，后宫之中，谁是敌谁是友？\n来人，将她打入冷宫！\n娘娘请安，奴才给您请安了。\n皇上翻了淑妃的牌子，今晚侍寝。\n赐死，赐她三尺白绫。`,
         xianxia: `师兄，我的灵根资质太差，恐怕无法筑基。\n金丹已碎，元婴即将成形，此刻不能有丝毫分心。\n道心不稳，心魔趁虚而入，若不能斩除，修为将全废。\n渡劫雷霆降临，天道不容逆天改命之人。\n灵石已经耗尽，丹田中的灵气所剩无几。\n御剑飞行千里，只为赶在飞升之前见她最后一面。\n结丹之路凶险万分，十人中仅有一人能成。\n仙人之上，还有天仙、金仙、大罗金仙之分。`,
         game: `少侠，你的灵根资质不错，可愿拜入我青云门？\n师父，弟子愿以毕生修炼道心，绝不辜负门派期望。\n此剑名为"断水"，乃上古仙人以天外陨铁铸造，可斩一切心魔。\n前方妖气冲天，看来有高阶妖兽在此渡劫。\n道友请留步，贫道有一事相求。\n你这走火入魔之人，休要在此撒野！\n江湖险恶，你一个筑基期的小修士，如何能独闯万妖山？\n以你金丹期的修为，要对付这元婴老怪，怕是力有不逮。`,
       };
-
-      const GOOGLE_TRANSLATE = {
+      const GOOGLE = {
         palace: [
           "Your Majesty, I can't do it!",
           "I'm tired, step back.",
           "Enemies meet on a narrow road, today let me meet you.",
           "You are so bold, you dare to break ground on the head of Tai Sui!",
-          "Thirty years east of the river, thirty years west of the river, don't bully the young poor.",
-          "You can know a person's face but not their heart. In the harem, who is friend and who is foe?",
+          "Thirty years east of the river, thirty years west, don't bully the young poor.",
+          "You can know a person's face but not their heart.",
           "Someone, put her in the cold palace!",
-          "Greetings to the empress, this servant pays respects to you.",
+          "Greetings to the empress, this servant pays respects.",
           "The emperor turned over Consort Shu's card, serving tonight.",
           "Grant death, grant her three feet of white silk.",
         ],
         xianxia: [
-          "Senior brother, my spiritual root quality is too poor, I'm afraid I can't build a foundation.",
-          "The golden pill is broken, the original baby is about to form, you can't be distracted at this moment.",
-          "The Dao heart is unstable, the heart demon takes advantage of the gap, if it can't be cut off, the cultivation will be completely wasted.",
-          "The tribulation thunder descends, the way of heaven does not allow those who defy fate.",
-          "The spirit stones are exhausted, the spiritual energy in the dantian is almost gone.",
-          "Flying with a sword for a thousand miles, just to see her one last time before flying up.",
-          "The road to tying the pill is extremely dangerous, only one in ten can succeed.",
-          "Above the immortals, there are also distinctions of heavenly immortals, golden immortals, and great Luo golden immortals.",
+          "My spiritual root quality is too poor, can't build a foundation.",
+          "The golden pill is broken, the original baby is about to form.",
+          "The Dao heart is unstable, the heart demon takes advantage.",
+          "The tribulation thunder descends, heaven doesn't allow fate defiers.",
+          "The spirit stones are exhausted, spiritual energy almost gone.",
+          "Flying with a sword for a thousand miles before flying up.",
+          "The road to tying the pill is extremely dangerous.",
+          "Above immortals: heavenly, golden, and great Luo golden immortals.",
         ],
         game: [
-          "Young hero, your spiritual root quality is good, are you willing to worship and enter my Qingyun Gate?",
-          "Master, the disciple is willing to cultivate the Dao heart for a lifetime, and will never fail the expectations of the sect.",
-          'This sword is called "Broken Water", it was forged by ancient immortals with extraterrestrial meteorite iron, and can cut all heart demons.',
-          "There is a monstrous demonic energy ahead, it seems there is a high-level demon beast undergoing tribulation here.",
-          "Taoist friend please stay, this poor Taoist has something to ask.",
-          "You, a person who has gone fire and entered the devil, don't be wild here!",
-          "The rivers and lakes are dangerous, you, a small cultivator in the foundation building period, how can you alone break into the Ten Thousand Demon Mountain?",
-          "With your golden pill period cultivation, to deal with this original baby old monster, I'm afraid you are not up to the task.",
+          "Young hero, willing to join my Qingyun Gate?",
+          "Master, the disciple will cultivate the Dao heart for a lifetime.",
+          "This sword called Broken Water, forged with meteorite iron.",
+          "Demonic energy ahead, a demon beast undergoing tribulation.",
+          "Taoist friend please stay, this poor Taoist has a request.",
+          "You who went fire and entered devil, don't be wild here!",
+          "Rivers and lakes are dangerous, you a small foundation builder.",
+          "With your golden pill cultivation, against this original baby old monster...",
         ],
       };
+      const ALL_CONCEPTS = [
+        "臣妾",
+        "本宫",
+        "皇上",
+        "奴才",
+        "微臣",
+        "哀家",
+        "冤家",
+        "翻牌子",
+        "打入冷宫",
+        "赐死",
+        "选秀",
+        "册封",
+        "太岁头上动土",
+        "三十年河东三十年河西",
+        "知人知面不知心",
+        "娘娘",
+        "请安",
+        "侍寝",
+        "凤冠霞帔",
+        "莫欺少年穷",
+        "三尺白绫",
+        "冤家路窄",
+        "妃嫔",
+        "渡劫",
+        "金丹",
+        "元婴",
+        "灵根",
+        "丹田",
+        "道心",
+        "飞升",
+        "心魔",
+        "仙人",
+        "筑基",
+        "化神",
+        "天道",
+        "灵石",
+        "御剑飞行",
+        "结丹",
+        "灵气",
+        "修为",
+        "逆天改命",
+        "道友",
+        "贫道",
+        "师父",
+        "弟子",
+        "少侠",
+        "门派",
+        "师兄",
+        "妖兽",
+        "江湖",
+        "武林盟主",
+        "内力",
+        "轻功",
+        "真气",
+        "走火入魔",
+        "绝世武功",
+        "一代宗师",
+        "相亲",
+        "彩礼",
+        "面子",
+        "关系",
+        "铁饭碗",
+      ];
 
-      function loadDemo(type) {
-        document.getElementById("content-input").value = DEMOS[type];
-        const typeMap = { palace: "drama", xianxia: "novel", game: "game" };
+      function loadDemo(t) {
+        document.getElementById("content-input").value = DEMOS[t];
         document.getElementById("content-type").value =
-          typeMap[type] || "drama";
+          t === "palace" ? "drama" : t === "game" ? "game" : "novel";
+        updateCharCount();
+      }
+      function updateCharCount() {
+        document.getElementById("char-count").textContent =
+          document.getElementById("content-input").value.length + " 字";
       }
 
-      // ---- API ----
       async function startAnalysis() {
         const content = document.getElementById("content-input").value.trim();
         if (!content) return;
-
         const btn = document.getElementById("start-btn");
         btn.disabled = true;
         btn.textContent = "分析中...";
         btn.classList.add("opacity-50");
-
-        document.getElementById("progress-section").classList.remove("hidden");
-        document.getElementById("results-section").classList.add("hidden");
-        document.getElementById("error-panel").classList.add("hidden");
-        document.getElementById("degradation-panel").classList.add("hidden");
-        resetAgents();
-        startElapsedTimer();
-
+        document.getElementById("pipeline-bar").classList.remove("hidden");
+        document.getElementById("translation-empty").classList.add("hidden");
+        document
+          .getElementById("translation-output")
+          .classList.remove("hidden");
+        document.getElementById("translation-lines").innerHTML = "";
+        document.getElementById("intel-panel").classList.add("hidden");
+        document.getElementById("source-input").classList.remove("hidden");
+        document.getElementById("source-annotated").classList.add("hidden");
+        document.getElementById("export-btn").classList.add("hidden");
+        resetDots();
+        startTimer();
         try {
           const resp = await fetch("/api/create", {
             method: "POST",
@@ -567,12 +601,11 @@
           currentJobId = data.job_id;
           listenSSE(currentJobId);
         } catch (e) {
-          stopElapsedTimer();
+          stopTimer();
           btn.disabled = false;
-          btn.textContent = "开始分析 Start";
+          btn.textContent = "文化 X 光";
           btn.classList.remove("opacity-50");
-          document.getElementById("error-panel").classList.remove("hidden");
-          document.getElementById("error-detail").textContent = e.message;
+          setStatus("连接失败", "error");
         }
       }
 
@@ -580,41 +613,24 @@
         const source = new EventSource(`/api/stream/${jobId}`);
         source.onmessage = (e) => {
           const event = JSON.parse(e.data);
-          updateProgress(event);
-          // Show degradation warnings in real-time
-          if (event.data?.degraded) {
-            document
-              .getElementById("degradation-panel")
-              .classList.remove("hidden");
-            const detail = document.getElementById("degradation-detail");
-            detail.textContent =
-              (detail.textContent ? detail.textContent + ", " : "") +
-              event.stage;
-          }
+          handleEvent(event);
           if (event.stage === "done") {
             source.close();
-            stopElapsedTimer();
-            const elapsed = startTimestamp
-              ? Math.floor((Date.now() - startTimestamp) / 1000)
-              : 0;
-            document.getElementById("progress-text").textContent =
-              `${elapsed}s`;
+            stopTimer();
             if (event.data?.status === "completed") {
               fetchResults(jobId);
             } else {
+              setStatus(event.message || "失败", "error");
               const btn = document.getElementById("start-btn");
               btn.disabled = false;
-              btn.textContent = "开始分析 Start";
+              btn.textContent = "文化 X 光";
               btn.classList.remove("opacity-50");
-              document.getElementById("error-panel").classList.remove("hidden");
-              document.getElementById("error-detail").textContent =
-                event.message || "未知错误";
             }
           }
         };
         source.onerror = () => {
           source.close();
-          stopElapsedTimer();
+          stopTimer();
         };
       }
 
@@ -625,254 +641,276 @@
         renderResults();
         const btn = document.getElementById("start-btn");
         btn.disabled = false;
-        btn.textContent = "开始分析 Start";
+        btn.textContent = "文化 X 光";
         btn.classList.remove("opacity-50");
+        document.getElementById("export-btn").classList.remove("hidden");
       }
 
-      // ---- Agent Progress ----
-      const AGENT_MAP = {
-        scanner: "agent-scanner",
-        matcher: "agent-matcher",
-        translator: "agent-translator",
-        reviewer: "agent-reviewer",
-        finalizer: "agent-finalizer",
+      const DOT_MAP = {
+        scanner: "dot-scanner",
+        matcher: "dot-matcher",
+        translator: "dot-translator",
+        reviewer: "dot-reviewer",
+        finalizer: "dot-finalizer",
       };
-
-      function resetAgents() {
-        Object.values(AGENT_MAP).forEach((id) => {
-          const el = document.getElementById(id);
-          el.classList.remove("agent-pulse");
-          el.style.borderColor = "";
-          el.querySelector(".agent-icon").className =
-            "agent-icon w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs text-gray-400";
-          el.querySelector(".agent-bar").style.width = "0%";
-          el.querySelector(".agent-bar").className =
-            "agent-bar h-full bg-gray-600 rounded-full transition-all duration-500";
+      function resetDots() {
+        Object.values(DOT_MAP).forEach((id) => {
+          document.getElementById(id).className = "agent-dot pending";
         });
-        document.getElementById("overall-progress").style.width = "0%";
-        document.getElementById("progress-text").textContent = "0%";
       }
-
-      function updateProgress(event) {
-        const pct = Math.round(event.progress * 100);
-        document.getElementById("overall-progress").style.width = pct + "%";
-        document.getElementById("progress-text").textContent = pct + "%";
-
-        const agentId = AGENT_MAP[event.stage];
-        if (!agentId) return;
-        const el = document.getElementById(agentId);
-
+      function handleEvent(event) {
+        const dotId = DOT_MAP[event.stage];
+        if (!dotId) return;
+        const dot = document.getElementById(dotId);
         if (event.data?.level === "error") {
-          el.style.borderColor = "#ef4444";
-          el.querySelector(".agent-icon").className =
-            "agent-icon w-6 h-6 rounded-full bg-red-900 flex items-center justify-center text-xs text-red-400";
-          el.querySelector(".agent-status").textContent = "Error";
+          dot.className = "agent-dot error";
           return;
         }
-
-        // Active state
-        if (event.progress < 1.0 && !event.message.includes("完成")) {
-          el.classList.add("agent-pulse");
-          el.querySelector(".agent-icon").className =
-            "agent-icon w-6 h-6 rounded-full bg-accent/30 flex items-center justify-center text-xs text-accent";
-          el.querySelector(".agent-bar").className =
-            "agent-bar h-full bg-accent rounded-full transition-all duration-500";
-          el.querySelector(".agent-status").textContent = event.message;
+        if (event.data?.degraded) {
+          dot.className = "agent-dot error";
+          setStatus(event.message, "warn");
+          return;
         }
-
-        // Completed
         if (
           event.message.includes("完成") ||
           event.message.includes("发现") ||
           event.message.includes("命中")
         ) {
-          el.classList.remove("agent-pulse");
-          el.style.borderColor = "#22c55e";
-          el.querySelector(".agent-icon").className =
-            "agent-icon w-6 h-6 rounded-full bg-green-900 flex items-center justify-center text-xs text-green-400";
-          el.querySelector(".agent-icon").textContent = "✓";
-          el.querySelector(".agent-bar").style.width = "100%";
-          el.querySelector(".agent-bar").className =
-            "agent-bar h-full bg-green-500 rounded-full transition-all duration-500";
-          el.querySelector(".agent-status").textContent = event.message;
+          dot.className = "agent-dot done";
+        } else {
+          dot.className = "agent-dot active";
+        }
+        setStatus(event.message);
+      }
+      function setStatus(msg, level) {
+        const el = document.getElementById("status-text");
+        el.textContent = msg;
+        el.className =
+          level === "error"
+            ? "text-cinnabar text-[10px] truncate max-w-xs"
+            : level === "warn"
+              ? "text-yellow-500 text-[10px] truncate max-w-xs"
+              : "text-gray-500 text-[10px] truncate max-w-xs";
+      }
+      function startTimer() {
+        startTime = Date.now();
+        if (elapsedInterval) clearInterval(elapsedInterval);
+        elapsedInterval = setInterval(() => {
+          document.getElementById("elapsed").textContent =
+            Math.floor((Date.now() - startTime) / 1000) + "s";
+        }, 1000);
+      }
+      function stopTimer() {
+        if (elapsedInterval) {
+          clearInterval(elapsedInterval);
+          elapsedInterval = null;
         }
       }
 
-      // ---- Results Rendering ----
       function renderResults() {
-        document.getElementById("results-section").classList.remove("hidden");
-        document.getElementById("results-section").classList.add("fade-in");
-        switchTab("translation");
+        renderAnnotatedSource();
         renderTranslation();
-        renderDecisions();
-        renderRisks();
-        renderNotes();
+        renderIntelPanel();
+      }
+
+      function renderAnnotatedSource() {
+        const content = document.getElementById("content-input").value;
+        let html = "";
+        const lines = content.split("\n");
+        lines.forEach((line) => {
+          let al = escHtml(line);
+          // Sort concepts by length desc so longer phrases match first
+          const sorted = [...ALL_CONCEPTS].sort((a, b) => b.length - a.length);
+          for (const concept of sorted) {
+            if (line.includes(concept)) {
+              const ec = escHtml(concept);
+              al = al.replace(
+                ec,
+                `<span class="culture-mark scan-glow" data-concept="${escAttr(concept)}" onmouseenter="showCard(this,event)" onmouseleave="hideCard()">${ec}</span>`,
+              );
+            }
+          }
+          html += `<p class="mb-1.5">${al}</p>`;
+        });
+        document.getElementById("annotated-text").innerHTML = html;
+        document.getElementById("source-input").classList.add("hidden");
+        document.getElementById("source-annotated").classList.remove("hidden");
       }
 
       function renderTranslation() {
-        const container = document.getElementById("translation-rows");
+        const container = document.getElementById("translation-lines");
         container.innerHTML = "";
         const translations = jobOutput?.translation || [];
-        if (!Array.isArray(translations)) return;
-
-        const contentType =
+        const ct =
           document.getElementById("content-type").value === "drama"
             ? "palace"
-            : "xianxia";
-        const googleTranslations = GOOGLE_TRANSLATE[contentType] || [];
-
+            : document.getElementById("content-type").value === "game"
+              ? "game"
+              : "xianxia";
+        const google = GOOGLE[ct] || [];
         translations.forEach((t, i) => {
-          const original = t.original || "";
-          const adapted = t.translation || "";
-          const google = googleTranslations[i] || "—";
-          const hasConcept = t.cultural_note;
-          const confidence = t.confidence || "high";
-
-          const row = document.createElement("div");
-          row.className = "grid grid-cols-3 hover:bg-surface-100/20 transition";
-          row.innerHTML = `
-      <div class="px-4 py-3 text-sm text-gray-300 border-r border-gray-800/50">${escHtml(original)}</div>
-      <div class="px-4 py-3 text-sm text-gray-500 border-r border-gray-800/50 italic">${escHtml(google)}</div>
-      <div class="px-4 py-3 text-sm text-gray-100">
-        ${escHtml(adapted)}
-        ${hasConcept ? `<span class="concept-badge inline-block ml-2 px-2 py-0.5 text-[10px] rounded-full bg-accent/15 text-accent border border-accent/30 cursor-help" title="${escAttr(t.cultural_note)}">文化适配</span>` : ""}
-        ${confidence === "low" ? '<span class="inline-block ml-1 px-1.5 py-0.5 text-[10px] rounded bg-yellow-900/50 text-yellow-500">待审核</span>' : ""}
+          const div = document.createElement("div");
+          div.className = "trans-line group";
+          div.style.animationDelay = i * 0.08 + "s";
+          const g = google[i] || "";
+          div.innerHTML = `<div class="flex gap-3 py-2 px-1 rounded hover:bg-ink-800/30 transition border-b border-ink-700/10">
+      <div class="flex-1">
+        <p class="text-sm text-gray-200 font-latin leading-relaxed">${escHtml(t.translation || "")}</p>
+        ${g ? `<p class="text-[10px] text-gray-600 mt-0.5 line-through italic">${escHtml(g)}</p>` : ""}
       </div>
-    `;
-          container.appendChild(row);
+      <div class="flex items-start gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition">
+        ${t.cultural_note ? '<span class="px-1.5 py-0.5 text-[9px] rounded bg-gold/10 text-gold/60">KB</span>' : ""}
+        ${t.confidence === "low" ? '<span class="px-1.5 py-0.5 text-[9px] rounded bg-cinnabar/10 text-cinnabar">审核</span>' : ""}
+      </div>
+    </div>`;
+          container.appendChild(div);
         });
+      }
+
+      function renderIntelPanel() {
+        document.getElementById("intel-panel").classList.remove("hidden");
+        renderDecisions();
+        renderRisks();
+        renderNotes();
+        renderPromo();
+        switchIntel("decisions");
       }
 
       function renderDecisions() {
-        const container = document.getElementById("decisions-content");
-        container.innerHTML = "";
-        const report = jobOutput?.decision_report;
-        if (!report || report._parse_failed) {
-          container.innerHTML =
-            '<p class="text-gray-500 text-sm">决策报告生成中或数据不可用</p>';
+        const c = document.getElementById("intel-decisions");
+        const r = jobOutput?.decision_report;
+        if (!r || r._parse_failed) {
+          c.innerHTML = '<p class="text-gray-600 text-xs">数据不可用</p>';
           return;
         }
-        const decisions = report.decisions || [];
-        decisions.forEach((d) => {
-          const card = document.createElement("div");
-          card.className =
-            "bg-surface-300/50 rounded-xl border border-gray-800 p-4 fade-in";
-          card.innerHTML = `
-      <div class="flex items-center gap-3 mb-2">
-        <span class="concept-badge px-3 py-1 rounded-full bg-accent/15 text-accent text-sm font-medium border border-accent/30">${escHtml(d.concept || "")}</span>
-        <span class="text-xs text-gray-500">${escHtml(d.kb_source || "")}</span>
-      </div>
-      <p class="text-sm text-gray-300 mb-2">${escHtml(d.significance || "")}</p>
-      <div class="grid grid-cols-2 gap-3 text-xs">
-        <div>
-          <span class="text-green-500 font-medium">Chosen:</span>
-          <span class="text-gray-300 ml-1">${escHtml(d.chosen_translation || "")}</span>
-        </div>
-        <div>
-          <span class="text-red-400 font-medium">Rejected:</span>
-          <span class="text-gray-500 ml-1">${(d.alternatives_rejected || []).join(", ")}</span>
-        </div>
-      </div>
-      <p class="text-xs text-gray-400 mt-2 border-t border-gray-800 pt-2">${escHtml(d.rationale || "")}</p>
-    `;
-          container.appendChild(card);
-        });
+        c.innerHTML = (r.decisions || [])
+          .map(
+            (d) =>
+              `<div class="flex gap-3 py-2 border-b border-ink-700/20"><span class="text-gold text-sm font-display flex-shrink-0 w-20">${escHtml(d.concept || "")}</span><div class="flex-1 text-xs"><span class="text-jade">${escHtml(d.chosen_translation || "")}</span>${(d.alternatives_rejected || []).length ? `<span class="text-gray-600 ml-2 line-through">${d.alternatives_rejected.join(", ")}</span>` : ""}<p class="text-gray-500 mt-0.5">${escHtml(d.rationale || "")}</p></div></div>`,
+          )
+          .join("");
       }
 
       function renderRisks() {
-        const report = jobOutput?.risk_report;
-        const header = document.getElementById("risks-header");
-        const container = document.getElementById("risks-content");
-        container.innerHTML = "";
-
-        if (!report || report._parse_failed) {
-          header.innerHTML =
-            '<p class="text-gray-500 text-sm">风险报告不可用</p>';
+        const c = document.getElementById("intel-risks");
+        const r = jobOutput?.risk_report;
+        if (!r || r._parse_failed) {
+          c.innerHTML = '<p class="text-gray-600 text-xs">数据不可用</p>';
           return;
         }
-
-        const level = report.overall_risk_level || "low";
-        const colors = {
-          high: "text-risk-high bg-red-900/30 border-red-800",
-          medium: "text-risk-medium bg-yellow-900/30 border-yellow-800",
-          low: "text-risk-low bg-green-900/30 border-green-800",
-        };
-        header.innerHTML = `
-    <div class="flex items-center gap-3">
-      <span class="px-3 py-1 rounded-full text-sm font-medium border ${colors[level] || colors.low}">${level.toUpperCase()}</span>
-      <span class="text-sm text-gray-300">${escHtml(report.summary || "")}</span>
-    </div>
-  `;
-
-        (report.risks || []).forEach((r) => {
-          const rl = r.risk_level || "low";
-          const card = document.createElement("div");
-          card.className =
-            "bg-surface-300/50 rounded-lg border border-gray-800 p-3 flex items-start gap-3 fade-in";
-          card.innerHTML = `
-      <span class="mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${rl === "high" ? "bg-risk-high" : rl === "medium" ? "bg-risk-medium" : "bg-risk-low"}"></span>
-      <div class="flex-1">
-        <p class="text-sm text-gray-200">${escHtml(r.concept || r.risk_reason || "")}</p>
-        <p class="text-xs text-gray-500 mt-1">${escHtml(r.suggestion || "")}</p>
-      </div>
-      <span class="text-[10px] px-2 py-0.5 rounded border ${colors[rl] || colors.low}">${rl}</span>
-    `;
-          container.appendChild(card);
-        });
+        const lv = r.overall_risk_level || "low";
+        const rc =
+          { high: "risk-high", medium: "risk-medium", low: "risk-low" }[lv] ||
+          "risk-low";
+        c.innerHTML =
+          `<div class="flex items-center gap-2 mb-3"><span class="px-2 py-0.5 text-[10px] rounded ${rc}">${lv.toUpperCase()}</span><span class="text-xs text-gray-400">${escHtml(r.summary || "")}</span></div>` +
+          (r.risks || [])
+            .map((x) => {
+              const xc =
+                { high: "risk-high", medium: "risk-medium", low: "risk-low" }[
+                  x.risk_level
+                ] || "risk-low";
+              return `<div class="flex items-start gap-2 py-1.5"><span class="px-1.5 py-0.5 text-[9px] rounded ${xc}">${x.risk_level || "?"}</span><div class="text-xs text-gray-400">${escHtml(x.concept || x.risk_reason || "")} <span class="text-gray-600">${escHtml(x.suggestion || "")}</span></div></div>`;
+            })
+            .join("");
       }
 
       function renderNotes() {
-        const container = document.getElementById("notes-content");
-        container.innerHTML = "";
-        const notes = jobOutput?.cultural_notes || [];
-        if (!notes.length) {
-          container.innerHTML =
-            '<p class="text-gray-500 text-sm">暂无文化注释</p>';
+        const c = document.getElementById("intel-notes");
+        const n = jobOutput?.cultural_notes || [];
+        if (!n.length) {
+          c.innerHTML = '<p class="text-gray-600 text-xs">暂无</p>';
           return;
         }
-        notes.forEach((n) => {
-          const card = document.createElement("div");
-          card.className =
-            "bg-surface-300/50 rounded-lg border border-gray-800 overflow-hidden fade-in";
-          card.innerHTML = `
-      <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('.arrow').classList.toggle('rotate-90')" class="w-full px-4 py-3 flex items-center gap-3 hover:bg-surface-100/20 transition text-left">
-        <span class="arrow text-gray-500 text-xs transition-transform">&#9654;</span>
-        <span class="text-sm text-gray-300">${escHtml(n.original || "")}</span>
-      </button>
-      <div class="hidden px-4 pb-3 border-t border-gray-800/50">
-        <p class="text-sm text-accent mt-2">${escHtml(n.note || "")}</p>
-      </div>
-    `;
-          container.appendChild(card);
-        });
+        c.innerHTML = n
+          .map(
+            (x) =>
+              `<div class="py-2 border-b border-ink-700/20"><p class="text-xs text-gray-400">${escHtml(x.original || "")}</p><p class="text-[11px] text-gold/70 mt-1 font-latin italic">${escHtml(x.note || "")}</p></div>`,
+          )
+          .join("");
       }
 
-      // ---- Tabs ----
-      function switchTab(name) {
+      function renderPromo() {
+        const c = document.getElementById("intel-promo");
+        const p = jobOutput?.promo_materials;
+        if (!p || p._parse_failed) {
+          c.innerHTML = '<p class="text-gray-600 text-xs">数据不可用</p>';
+          return;
+        }
+        c.innerHTML =
+          (p.synopsis
+            ? `<p class="text-xs text-gray-300 mb-3">${escHtml(p.synopsis)}</p>`
+            : "") +
+          (p.social_posts || [])
+            .map(
+              (x) =>
+                `<div class="py-1.5 border-b border-ink-700/20"><span class="text-[9px] text-gold/50">${escHtml(x.platform || "")}</span><p class="text-xs text-gray-400 mt-0.5">${escHtml(x.text || "")}</p></div>`,
+            )
+            .join("");
+      }
+
+      function switchIntel(name) {
         document
-          .querySelectorAll(".tab-content")
+          .querySelectorAll(".intel-content")
           .forEach((el) => el.classList.add("hidden"));
-        document.getElementById("tab-" + name).classList.remove("hidden");
-        document.querySelectorAll(".tab-btn").forEach((btn) => {
-          if (btn.dataset.tab === name) {
-            btn.className =
-              "tab-btn px-4 py-2 text-xs rounded-md transition bg-accent/20 text-accent";
-          } else {
-            btn.className =
-              "tab-btn px-4 py-2 text-xs rounded-md transition text-gray-500 hover:text-gray-300";
-          }
+        document.getElementById("intel-" + name).classList.remove("hidden");
+        document.querySelectorAll(".intel-tab").forEach((btn) => {
+          btn.classList.toggle("border-gold", btn.dataset.tab === name);
+          btn.classList.toggle("text-gold", btn.dataset.tab === name);
         });
       }
 
-      // ---- Export ----
-      function exportMarkdown() {
+      function showCard(el, ev) {
+        const concept = el.dataset.concept;
+        const card = document.getElementById("culture-card");
+        document.getElementById("cc-concept").textContent = concept;
+        document.getElementById("cc-genre").textContent = "";
+        document.getElementById("cc-context").textContent = "";
+        document.getElementById("cc-good").innerHTML = "";
+        document.getElementById("cc-bad").innerHTML = "";
+        let noteText = "";
+        const translations = jobOutput?.translation || [];
+        for (const t of translations) {
+          if (t.original && t.original.includes(concept) && t.cultural_note) {
+            noteText = t.cultural_note;
+            break;
+          }
+        }
+        const decisions = jobOutput?.decision_report?.decisions || [];
+        for (const d of decisions) {
+          if (d.concept === concept) {
+            document.getElementById("cc-context").textContent =
+              d.significance || "";
+            document.getElementById("cc-good").innerHTML =
+              `<p>${escHtml(d.chosen_translation || "")}</p>`;
+            document.getElementById("cc-bad").innerHTML = (
+              d.alternatives_rejected || []
+            )
+              .map((r) => `<p>${escHtml(r)}</p>`)
+              .join("");
+            document.getElementById("cc-genre").textContent = d.kb_source || "";
+            break;
+          }
+        }
+        document.getElementById("cc-note").textContent =
+          noteText || "文化注释将在分析完成后显示";
+        const rect = el.getBoundingClientRect();
+        card.style.left = Math.min(rect.left, window.innerWidth - 360) + "px";
+        card.style.top =
+          Math.min(rect.bottom + 8, window.innerHeight - 280) + "px";
+        card.classList.add("visible");
+      }
+      function hideCard() {
+        document.getElementById("culture-card").classList.remove("visible");
+      }
+
+      function exportReport() {
         if (!jobOutput) return;
-        let md = "# CultureBridge Translation Report\n\n";
-        md += "## Translation\n\n| Original | CultureBridge |\n|---|---|\n";
+        let md = "# CultureBridge Report\n\n## Translation\n\n";
         (jobOutput.translation || []).forEach((t) => {
-          md += `| ${t.original || ""} | ${t.translation || ""} |\n`;
+          md += `**${t.original || ""}**\n${t.translation || ""}\n\n`;
         });
-        md += "\n## Cultural Notes\n\n";
+        md += "## Cultural Notes\n\n";
         (jobOutput.cultural_notes || []).forEach((n) => {
           md += `- **${n.original || ""}**: ${n.note || ""}\n`;
         });
@@ -883,45 +921,6 @@
         a.click();
       }
 
-      // ---- Character count + time estimate ----
-      function updateCharCount() {
-        const len = document.getElementById("content-input").value.length;
-        document.getElementById("char-count").textContent = `${len} 字`;
-        const est = document.getElementById("time-estimate");
-        if (len === 0) {
-          est.textContent = "";
-          return;
-        }
-        if (len < 500) est.textContent = "预估耗时 1-2 分钟";
-        else if (len < 2000) est.textContent = "预估耗时 2-4 分钟";
-        else est.textContent = "预估耗时 4-8 分钟";
-      }
-
-      // ---- Retry ----
-      function retryAnalysis() {
-        document.getElementById("error-panel").classList.add("hidden");
-        startAnalysis();
-      }
-
-      // ---- Elapsed timer ----
-      let elapsedInterval = null;
-      let startTimestamp = null;
-      function startElapsedTimer() {
-        startTimestamp = Date.now();
-        if (elapsedInterval) clearInterval(elapsedInterval);
-        elapsedInterval = setInterval(() => {
-          const secs = Math.floor((Date.now() - startTimestamp) / 1000);
-          document.getElementById("progress-text").textContent = `${secs}s`;
-        }, 1000);
-      }
-      function stopElapsedTimer() {
-        if (elapsedInterval) {
-          clearInterval(elapsedInterval);
-          elapsedInterval = null;
-        }
-      }
-
-      // ---- Utils ----
       function escHtml(s) {
         const d = document.createElement("div");
         d.textContent = s;
