@@ -1,4 +1,6 @@
 .playwright-mcp/
+.agents/
+videos/
 *.pdf
 *.png
 *.jpg
@@ -9,3 +11,5 @@ client_secret_*.json
 .DS_Store
 node_modules/
 backend/output/
+docs/handoffs/
+docs/competition-registration-fields.md
