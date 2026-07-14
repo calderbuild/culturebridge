@@ -272,11 +272,11 @@
           >
         </div>
         <div id="step-indicator" class="flex items-center gap-2 text-xs">
-          <span id="si-1" class="text-gold font-medium">1 选择</span>
+          <span id="si-1" onclick="goToStepIfReached(1)" class="text-gold font-medium cursor-pointer">1 选择</span>
           <span class="text-gray-500">&#8594;</span>
-          <span id="si-2" class="text-gray-500">2 处理</span>
+          <span id="si-2" onclick="goToStepIfReached(2)" class="text-gray-500 cursor-pointer">2 处理</span>
           <span class="text-gray-500">&#8594;</span>
-          <span id="si-3" class="text-gray-500">3 发布</span>
+          <span id="si-3" onclick="goToStepIfReached(3)" class="text-gray-500 cursor-pointer">3 发布</span>
         </div>
       </div>
     </header>
@@ -539,7 +539,19 @@
 
       <!-- ==================== STEP 2: Cultural Processing ==================== -->
       <section id="step2" class="step-panel right">
-        <div class="h-full flex">
+        <div class="h-full flex relative">
+          <div
+            id="s2-next-bar"
+            class="hidden absolute bottom-5 left-1/2 -translate-x-1/2 z-10"
+          >
+            <button
+              onclick="proceedToStep3()"
+              class="bg-gold hover:bg-gold-light text-ink font-medium px-6 py-2.5 rounded-lg text-sm shadow-lg transition flex items-center gap-2"
+            >
+              查看六件套 · 发布素材
+              <span aria-hidden="true">&#8594;</span>
+            </button>
+          </div>
           <!-- Left: source -->
           <div class="w-1/2 border-r border-ink-700/30 flex flex-col">
             <div
@@ -625,7 +637,7 @@
               </button>
               <div class="flex-1"></div>
               <button
-                onclick="goStep(1)"
+                onclick="restartFlow()"
                 class="text-xs text-gray-500 hover:text-gold transition"
               >
                 重新开始
@@ -677,11 +689,11 @@
           <p class="text-white font-medium mb-2" id="pub-title">
             连接 TikTok 账号
           </p>
-          <p class="text-xs text-gray-400 mb-6">
+          <p class="text-xs text-gray-400 mb-6" id="pub-subtitle">
             授权 CultureBridge 发布内容到你的账号
           </p>
           <button
-            onclick="simulatePublish()"
+            onclick="doPublish()"
             class="w-full bg-gold text-ink-950 font-medium py-2.5 rounded-lg text-sm"
           >
             授权并发布
@@ -719,6 +731,27 @@
             class="w-full bg-ink-700 text-gray-200 py-2 rounded-lg text-sm"
           >
             完成
+          </button>
+        </div>
+        <div id="pub-step4" class="hidden">
+          <div
+            class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4"
+          >
+            <span class="text-red-400 text-xl">&#33;</span>
+          </div>
+          <p class="text-white font-medium mb-1">发布失败</p>
+          <p class="text-xs text-gray-400 mb-4" id="pub-error-msg"></p>
+          <button
+            onclick="doPublish()"
+            class="w-full bg-gold text-ink-950 font-medium py-2.5 rounded-lg text-sm"
+          >
+            重试
+          </button>
+          <button
+            onclick="closeModal()"
+            class="w-full text-gray-400 text-xs mt-3 hover:text-gray-300 transition"
+          >
+            取消
           </button>
         </div>
       </div>
@@ -769,6 +802,7 @@
     <script>
       // ========== STATE ==========
       let currentStep = 1,
+        maxStepReached = 1,
         currentJobId = null,
         jobOutput = null,
         jobMode = null,
@@ -811,6 +845,26 @@
         ],
       };
       const ALL_CONCEPTS = [
+        "相亲",
+        "彩礼",
+        "丈母娘",
+        "面子",
+        "关系",
+        "铁饭碗",
+        "望子成龙",
+        "月老",
+        "红包",
+        "丢人",
+        "拍马屁",
+        "吃醋",
+        "老实人",
+        "败家子",
+        "门当户对",
+        "出人头地",
+        "人情世故",
+        "不孝有三无后为大",
+        "鸡毛蒜皮",
+        "家和万事兴",
         "臣妾",
         "本宫",
         "皇上",
@@ -821,16 +875,39 @@
         "翻牌子",
         "打入冷宫",
         "赐死",
+        "选秀",
+        "册封",
         "太岁头上动土",
         "三十年河东三十年河西",
         "知人知面不知心",
         "娘娘",
         "请安",
         "侍寝",
+        "凤冠霞帔",
         "莫欺少年穷",
         "三尺白绫",
         "冤家路窄",
         "妃嫔",
+        "江湖",
+        "武林盟主",
+        "内力",
+        "轻功",
+        "真气",
+        "点穴",
+        "闭关修炼",
+        "掌门人",
+        "侠义",
+        "武功秘籍",
+        "以毒攻毒",
+        "气沉丹田",
+        "刀光剑影",
+        "恩怨情仇",
+        "行侠仗义",
+        "走火入魔",
+        "绝世武功",
+        "打抱不平",
+        "青出于蓝",
+        "一代宗师",
         "渡劫",
         "金丹",
         "元婴",
@@ -841,6 +918,7 @@
         "心魔",
         "仙人",
         "筑基",
+        "化神",
         "天道",
         "灵石",
         "御剑飞行",
@@ -856,10 +934,7 @@
         "门派",
         "师兄",
         "妖兽",
-        "江湖",
-        "走火入魔",
-        "内力",
-        "轻功",
+        "仙人等级",
       ];
 
       // ========== STEP NAVIGATION ==========
@@ -871,15 +946,29 @@
             (i + 1 < n ? "left" : i + 1 > n ? "right" : "active");
         });
         currentStep = n;
-        document.getElementById("si-1").className =
-          n >= 1 ? "text-gold font-medium" : "text-gray-500";
-        document.getElementById("si-2").className =
-          n >= 2 ? "text-gold font-medium" : "text-gray-500";
-        document.getElementById("si-3").className =
-          n >= 3 ? "text-gold font-medium" : "text-gray-500";
+        if (n > maxStepReached) maxStepReached = n;
+        [1, 2, 3].forEach((i) => {
+          const el = document.getElementById("si-" + i);
+          el.className =
+            (i === n
+              ? "text-gold font-medium"
+              : i <= maxStepReached
+                ? "text-gray-300"
+                : "text-gray-500") +
+            (i <= maxStepReached ? " cursor-pointer" : " cursor-default");
+        });
         document
           .getElementById("pipeline-bar")
           .classList.toggle("hidden", n !== 2);
+      }
+
+      function goToStepIfReached(n) {
+        if (n <= maxStepReached) goStep(n);
+      }
+
+      function restartFlow() {
+        maxStepReached = 1;
+        goStep(1);
       }
 
       // ========== STEP 1: MODE HANDLERS ==========
@@ -902,6 +991,7 @@
         lines.innerHTML = "";
         log.innerHTML = "";
         document.getElementById("s2-charcount").textContent = "";
+        document.getElementById("s2-next-bar").classList.add("hidden");
         if (mode === "beginner") {
           srcLoading.style.display = "flex";
           srcLoading.querySelector("p").textContent = "AI 正在生成内容...";
@@ -929,6 +1019,7 @@
           ...document.querySelectorAll(".platform-check input:checked"),
         ].map((c) => c.value);
         document.getElementById("dot-creator").classList.remove("hidden");
+        maxStepReached = 1;
         goStep(2);
         showStep2Loading("beginner");
         resetDots();
@@ -958,6 +1049,7 @@
         if (!content) return;
         jobMode = "pro";
         document.getElementById("dot-creator").classList.add("hidden");
+        maxStepReached = 1;
         goStep(2);
         showStep2Loading("pro");
         document.getElementById("s2-annotated").textContent = content;
@@ -1008,10 +1100,12 @@
         const d = await r.json();
         jobOutput = d.output;
         renderStep2Results();
-        setTimeout(() => {
-          renderStep3();
-          goStep(3);
-        }, 1500);
+        renderStep3();
+        document.getElementById("s2-next-bar").classList.remove("hidden");
+      }
+
+      function proceedToStep3() {
+        goStep(3);
       }
 
       // ========== AGENT DOTS ==========
@@ -1172,22 +1266,29 @@
         const pc = jobOutput?.platform_content || {};
         // TikTok
         const tk = pc.tiktok || {};
+        const tkCover = tk.cover_image_url
+          ? `<img src="${esc(tk.cover_image_url)}" class="absolute inset-0 w-full h-full object-cover rounded-3xl" alt="TikTok cover" />`
+          : "";
         document.getElementById("plat-tiktok").innerHTML = `
-    <div class="pub-card bg-black rounded-3xl p-5 border border-gray-800 max-w-xs mx-auto" style="aspect-ratio:9/14;display:flex;flex-direction:column;justify-content:flex-end">
-      <div class="mt-auto">
+    <div class="pub-card bg-black rounded-3xl p-5 border border-gray-800 max-w-xs mx-auto relative overflow-hidden" style="aspect-ratio:9/14;display:flex;flex-direction:column;justify-content:flex-end">
+      ${tkCover}
+      <div class="mt-auto relative" ${tk.cover_image_url ? 'style="background:linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.1));margin:-1.25rem;padding:1.25rem"' : ""}>
         <p class="text-white text-sm mb-2 leading-relaxed">${esc(tk.caption || "TikTok content generating...")}</p>
         <p class="text-xs text-blue-400">${(tk.hashtags || []).map((h) => "#" + h.replace("#", "")).join(" ")}</p>
-        <p class="text-xs text-gray-400 mt-2">Cover: ${esc(tk.cover_text_suggestion || "")}</p>
+        ${tk.cover_image_url ? "" : `<p class="text-xs text-gray-400 mt-2">Cover: ${esc(tk.cover_text_suggestion || "")}</p>`}
       </div>
     </div>
-    <button onclick="openPublish('TikTok')" class="w-full max-w-xs mx-auto block mt-4 bg-gradient-to-r from-pink-500 to-cyan-400 text-white font-medium py-2.5 rounded-lg text-sm">发布到 TikTok</button>`;
+    <button onclick="openPublish('TikTok', 'tiktok')" class="w-full max-w-xs mx-auto block mt-4 bg-gradient-to-r from-pink-500 to-cyan-400 text-white font-medium py-2.5 rounded-lg text-sm">发布到 TikTok</button>`;
 
         // Instagram
         const ig = pc.instagram || {};
+        const igCover = ig.cover_image_url
+          ? `<img src="${esc(ig.cover_image_url)}" class="w-full h-full object-cover" alt="Instagram cover" />`
+          : `<span class="text-4xl">&#127983;</span>`;
         document.getElementById("plat-instagram").innerHTML = `
     <div class="pub-card bg-white rounded-xl overflow-hidden max-w-sm mx-auto border">
       <div class="px-3 py-2 flex items-center gap-2 border-b"><div class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-orange-400"></div><span class="text-xs font-medium text-gray-800">culturebridge</span></div>
-      <div class="bg-gradient-to-br from-amber-100 to-orange-50 aspect-square flex items-center justify-center"><span class="text-4xl">&#127983;</span></div>
+      <div class="bg-gradient-to-br from-amber-100 to-orange-50 aspect-square flex items-center justify-center">${igCover}</div>
       <div class="p-3"><p class="text-xs text-gray-800 leading-relaxed whitespace-pre-line">${esc((ig.caption || "").substring(0, 300))}</p><p class="text-xs text-blue-600 mt-1">${(
         ig.hashtags || []
       )
@@ -1195,7 +1296,7 @@
         .map((h) => "#" + h.replace("#", ""))
         .join(" ")}</p></div>
     </div>
-    <button onclick="openPublish('Instagram')" class="w-full max-w-sm mx-auto block mt-4 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white font-medium py-2.5 rounded-lg text-sm">发布到 Instagram</button>`;
+    <button onclick="openPublish('Instagram', 'instagram')" class="w-full max-w-sm mx-auto block mt-4 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white font-medium py-2.5 rounded-lg text-sm">发布到 Instagram</button>`;
 
         // YouTube
         const yt = pc.youtube || {};
@@ -1256,7 +1357,10 @@
       }
 
       // ========== PUBLISH MODAL ==========
-      function openPublish(name) {
+      const REAL_PUBLISH_PLATFORMS = new Set(["tiktok", "instagram"]);
+      let pubPlatformKey = null;
+
+      function openPublish(name, platformKey) {
         const icons = {
           TikTok: "T",
           Instagram: "I",
@@ -1264,16 +1368,33 @@
           X: "X",
           Reddit: "R",
         };
+        pubPlatformKey = platformKey || null;
         document.getElementById("pub-icon").textContent =
           icons[name] || name[0];
-        document.getElementById("pub-title").textContent =
-          "连接 " + name + " 账号";
+        const isReal = REAL_PUBLISH_PLATFORMS.has(pubPlatformKey);
+        document.getElementById("pub-title").textContent = isReal
+          ? "发布到 " + name
+          : "连接 " + name + " 账号";
+        document.getElementById("pub-subtitle").textContent = isReal
+          ? "已连接账号 @" +
+            (pubPlatformKey === "tiktok" ? "calderbuilder" : "calderbuild") +
+            "，将真实发布这条内容"
+          : "授权 CultureBridge 发布内容到你的账号";
         document.getElementById("pub-platform-name").textContent = name;
         document.getElementById("pub-done-name").textContent = name;
         document.getElementById("pub-step1").classList.remove("hidden");
         document.getElementById("pub-step2").classList.add("hidden");
         document.getElementById("pub-step3").classList.add("hidden");
+        document.getElementById("pub-step4").classList.add("hidden");
         document.getElementById("pub-modal").classList.remove("hidden");
+      }
+      function doPublish() {
+        document.getElementById("pub-step4").classList.add("hidden");
+        if (REAL_PUBLISH_PLATFORMS.has(pubPlatformKey)) {
+          realPublish();
+        } else {
+          simulatePublish();
+        }
       }
       function simulatePublish() {
         document.getElementById("pub-step1").classList.add("hidden");
@@ -1282,6 +1403,30 @@
           document.getElementById("pub-step2").classList.add("hidden");
           document.getElementById("pub-step3").classList.remove("hidden");
         }, 2000);
+      }
+      async function realPublish() {
+        document.getElementById("pub-step1").classList.add("hidden");
+        document.getElementById("pub-step2").classList.remove("hidden");
+        try {
+          const r = await fetch(
+            `/api/publish/${currentJobId}/${pubPlatformKey}`,
+            { method: "POST" },
+          );
+          const d = await r.json();
+          document.getElementById("pub-step2").classList.add("hidden");
+          if (r.ok && d.success) {
+            document.getElementById("pub-step3").classList.remove("hidden");
+          } else {
+            document.getElementById("pub-error-msg").textContent =
+              d.detail || d.error || "发布失败，请重试";
+            document.getElementById("pub-step4").classList.remove("hidden");
+          }
+        } catch (e) {
+          document.getElementById("pub-step2").classList.add("hidden");
+          document.getElementById("pub-error-msg").textContent =
+            "网络错误：" + e.message;
+          document.getElementById("pub-step4").classList.remove("hidden");
+        }
       }
       function closeModal() {
         document.getElementById("pub-modal").classList.add("hidden");

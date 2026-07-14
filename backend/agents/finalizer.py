@@ -4,6 +4,7 @@ import json
 import logging
 
 from backend.llm import call_claude, parse_json_response
+from backend.image_generator import generate_cover_image
 
 logger = logging.getLogger("culturebridge.finalizer")
 
@@ -131,6 +132,10 @@ def run(
 
     # Step 5e: Platform-specific content for 5 overseas platforms
     platform_content = _generate_platform_content(context, translation_result)
+
+    # Step 5f: Real cover images for Instagram/TikTok (best-effort, never fails the pipeline)
+    if isinstance(platform_content, dict) and not platform_content.get("_parse_failed"):
+        _attach_cover_images(platform_content, context)
 
     logger.info(
         "Finalized: %d lines, %d decisions, %d promo items, %d platforms",
@@ -336,3 +341,44 @@ def _generate_platform_content(context: dict, translation_result: dict) -> dict:
         logger.warning("Platform content JSON parse failed")
         return {"_parse_failed": True}
     return result
+
+
+def _attach_cover_images(platform_content: dict, context: dict) -> None:
+    """Generate real Gemini cover images for Instagram/TikTok and attach their
+    public URLs to platform_content in place. Best-effort: a failure here
+    just leaves cover_image_url unset, it never fails the finalizer stage."""
+    job_id = context.get("job_id") or "job"
+    target_market = context.get("target_market", "")
+
+    tiktok = platform_content.get("tiktok")
+    if isinstance(tiktok, dict):
+        cover_text = tiktok.get("cover_text_suggestion", "")
+        prompt = (
+            "A vertical 9:16 social media cover image for a TikTok video about "
+            f"Chinese cultural content adapted for the {target_market} market. "
+            "Cinematic, eye-catching, no watermark. "
+            f'Overlay text on the image should read: "{cover_text}". '
+            "Style: vibrant, high-contrast, mobile-first thumbnail."
+        )
+        try:
+            url = generate_cover_image(prompt, job_id, "tiktok")
+            if url:
+                tiktok["cover_image_url"] = url
+        except Exception as e:
+            logger.warning("TikTok cover image generation failed: %s", e)
+
+    instagram = platform_content.get("instagram")
+    if isinstance(instagram, dict):
+        caption = instagram.get("caption", "")
+        prompt = (
+            "A square 1:1 Instagram post cover image for Chinese cultural content "
+            f"adapted for the {target_market} market. Editorial, elegant, "
+            "culturally resonant visual, no text overlay, no watermark. "
+            f'Theme derived from: "{caption[:200]}".'
+        )
+        try:
+            url = generate_cover_image(prompt, job_id, "instagram")
+            if url:
+                instagram["cover_image_url"] = url
+        except Exception as e:
+            logger.warning("Instagram cover image generation failed: %s", e)

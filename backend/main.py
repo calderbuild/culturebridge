@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 
 from backend.config import validate_config
 from backend.pipeline import PipelineEvent, run_pipeline
+from backend import zernio_client
 
 logging.basicConfig(
     level=logging.INFO,
@@ -251,6 +252,47 @@ async def stream_events(job_id: str):
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "service": "CultureBridge"}
+
+
+@app.post("/api/publish/{job_id}/{platform}")
+async def publish(job_id: str, platform: str):
+    """Real publish to Instagram/TikTok via Zernio. Other platforms stay
+    on the frontend's demo-simulation flow."""
+    if platform not in ("instagram", "tiktok"):
+        raise HTTPException(
+            status_code=400, detail="Real publish is only wired for instagram/tiktok"
+        )
+    if job_id not in jobs:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    output = jobs[job_id].get("output") or {}
+    content = (output.get("platform_content") or {}).get(platform) or {}
+    image_url = content.get("cover_image_url")
+    if not image_url:
+        raise HTTPException(
+            status_code=400, detail="No cover image was generated for this post"
+        )
+
+    loop = asyncio.get_event_loop()
+    if platform == "instagram":
+        caption = content.get("caption", "")
+        hashtags = " ".join("#" + h.lstrip("#") for h in content.get("hashtags", []))
+        result = await loop.run_in_executor(
+            None, zernio_client.publish_instagram, f"{caption}\n\n{hashtags}", image_url
+        )
+    else:
+        title = content.get("cover_text_suggestion") or content.get("caption", "")
+        hashtags = " ".join("#" + h.lstrip("#") for h in content.get("hashtags", []))
+        description = f"{content.get('caption', '')}\n\n{hashtags}"
+        result = await loop.run_in_executor(
+            None, zernio_client.publish_tiktok, title, description, image_url
+        )
+
+    if not result.get("success"):
+        raise HTTPException(
+            status_code=502, detail=result.get("error", "Publish failed")
+        )
+    return result
 
 
 _frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")

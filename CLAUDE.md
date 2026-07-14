@@ -66,6 +66,7 @@ Fork 自 `github.com/calderbuild/agentcut`（多 Agent 视频生产流水线）�
 | `/api/create-from-intent` | POST | 小白模式——根据意图自动生成内容（触发 Agent 0） |
 | `/api/status/{job_id}` | GET | 查询任务状态 |
 | `/api/stream/{job_id}` | GET | SSE 实时进度流 |
+| `/api/publish/{job_id}/{platform}` | POST | 真实发布到 Instagram/TikTok（经 Zernio），platform 仅限 instagram/tiktok |
 | `/api/health` | GET | 健康检查 |
 
 ## LLM 路由
@@ -79,17 +80,20 @@ Fork 自 `github.com/calderbuild/agentcut`（多 Agent 视频生产流水线）�
 - **后端**：Python 3.10+, FastAPI, SSE streaming
 - **LLM**：DeepSeek（分析/审校）+ Claude Sonnet 4（翻译输出），统一通过 OpenRouter API 调用
 - **文化知识库**：`backend/knowledge/mappings/*.json`，90 条文化概念映射，跨内容形态通用
-- **图片生成**：Gemini Imagen 4 API
-- **平台发布**：X/Twitter OAuth 1.0a + YouTube OAuth 2.0 + TikTok Content Posting API + Instagram Graph API
+- **图片生成**：Gemini `gemini-3.1-flash-image`（`backend/image_generator.py`，直连 REST `generateContent`，非 Imagen 4 standalone endpoint）
+- **平台发布**：Instagram + TikTok 经 Zernio API 真实发布（`backend/zernio_client.py`，账号已连接，见 `.env` 的 `ZERNIO_*`）；YouTube/X/Reddit 仍是前端演示态，尚未接入各自的原生 OAuth 发布
 - **前端**：HTML + Tailwind CSS，三步向导（选择→处理→发布）
-- **部署**：需要公网 URL（TikTok/Instagram 验证需要）
+- **部署**：Render 免费版，URL `https://culturebridge-dwoy.onrender.com`，service ID `srv-d7fmmdnavr4c73cpoaj0`，auto-deploy 开启（push main 自动部署）
 
 ## 开发约定
 
 - 产品方向确认后锁定执行，不反复改
 - 赛题关键词必须逐词对应到产品功能
 - 前端交互优先为小白设计（引导式，不是专业工具形态）
-- API 凭证全部在 `.env` 中（已 gitignore），包括 OpenRouter、Gemini、X、YouTube、TikTok
+- API 凭证全部在 `.env` 中（已 gitignore），包括 OpenRouter、Gemini、Zernio、X、YouTube、TikTok
+- 生成的封面图存于 `frontend/generated/`（已被 `.gitignore` 的 `*.jpg`/`*.png` 规则忽略，不进 git），`PUBLIC_BASE_URL` 决定发给 Zernio 的图片公网地址，本地测试需临时改成 `http://localhost:8000`
+- 真实发布（`/api/publish`）会真的发到已连接的线上 Instagram/TikTok 账号，本地联调或手动触发前先确认这是有意为之
+- 用户要一个值（URL、密钥、路径等）时，直接给值，不要附加解释列表
 
 ## 文化知识库
 

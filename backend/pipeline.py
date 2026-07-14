@@ -80,6 +80,7 @@ def run_pipeline(
         "content_type": content_type,
         "target_lang": target_lang,
         "target_market": target_market,
+        "job_id": job_id,
     }
 
     # ---- Agent 1: Cultural Scanner (CRITICAL — fails pipeline) ----
